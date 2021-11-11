@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf2_ros
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
