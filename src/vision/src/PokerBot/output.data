@@ -1,5 +1,5 @@
 classes= 52  
 train  = cards/train.txt  
 valid  = cards/test.txt  
-names = /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/obj.names  
+names = obj.names  
 backup = output/
