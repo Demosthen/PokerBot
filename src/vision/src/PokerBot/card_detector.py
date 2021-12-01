@@ -9,5 +9,5 @@ def classify(im, thresh=0.75):
     
     r = detect_np(net, meta, im, thresh)
     return r
-im = plt.imread("test.png")
-print(classify(im, 0.5))
+im = plt.imread("kh.jpg")
+print(classify(im, 0.1))
