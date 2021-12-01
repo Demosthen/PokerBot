@@ -1,0 +1,6 @@
+classes = 52
+train = data/train2.txt
+valid = data/val2.txt
+names = data/cards.names
+backup = backup
+gpus = 1
