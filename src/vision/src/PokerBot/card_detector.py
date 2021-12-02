@@ -21,6 +21,7 @@ class ImageDetector():
         darknet_image = darknet.make_image(width, height, 3)
 
         image = cv2.imread("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/test.jpg")
+        import pdb; pdb.set_trace()
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # uncomment if ros gives us BGR
         print("pre resize")
         image_resized = cv2.resize(image_rgb, (width, height),

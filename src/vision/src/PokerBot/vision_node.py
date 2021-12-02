@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import numpy as np
-from darknet import *
+from card_detector import *
 
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
@@ -13,7 +13,7 @@ class VisionPublisher:
         #Save the image in the instance variable
         # self.lastImage = img
         im = self.bridge.imgmsg_to_cv2(img)
-        r = detect_np(self.net, self.meta, im, 0.1)
+        r = self.detector.detect(im, 0.1)
         # classification = classify(im)
         #Print an alert to the console
         print("received", rospy.get_time())
@@ -34,8 +34,12 @@ class VisionPublisher:
         self.bridge = CvBridge()
 
         # Import neural net metadata
-        self.net = load_net(b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/tiny2-coco.cfg", b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/tiny2_coco_100k_candidate.weights", 0)
-        self.meta = load_meta(b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/output.data")
+        #self.net = load_net(b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/tiny2-coco.cfg", b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/tiny2_coco_100k_candidate.weights", 0)
+        #self.meta = load_meta(b"/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/output.data")
+        self.net = ImageDetector(
+        config_file="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/custom_yolo.config",
+        data_file="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/cards.data",
+        weights="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/weights/backup/yolov4-tiny-custom_30000.weights")
 
         #Initialize the node
         rospy.init_node('cam_listener')
