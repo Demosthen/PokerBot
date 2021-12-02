@@ -1,10 +1,11 @@
 GPU=0
 CUDNN=0
 CUDNN_HALF=0
-OPENCV=1
+OPENCV=0
+NUMPY=0
 AVX=0
 OPENMP=0
-LIBSO=0
+LIBSO=1
 ZED_CAMERA=0
 ZED_CAMERA_v2_8=0
 
@@ -62,6 +63,8 @@ VPATH=./src/
 EXEC=darknet
 OBJDIR=./obj/
 
+
+
 ifeq ($(LIBSO), 1)
 LIBNAMESO=libdarknet.so
 APPNAMESO=uselib
@@ -79,6 +82,11 @@ OPTS=-Ofast
 LDFLAGS= -lm -pthread
 COMMON= -Iinclude/ -I3rdparty/stb/include
 CFLAGS=-Wall -Wfatal-errors -Wno-unused-result -Wno-unknown-pragmas -fPIC
+
+ifeq ($(NUMPY), 1) 
+COMMON+= -DNUMPY -I/usr/include/python2.7/ -I/usr/lib/python2.7/dist-packages/numpy/core/include/numpy/
+CFLAGS+= -DNUMPY
+endif
 
 ifeq ($(DEBUG), 1)
 #OPTS= -O0 -g
