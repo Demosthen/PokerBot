@@ -52,11 +52,10 @@ class VisionPublisher:
         rospy.init_node('cam_listener')
 
         #Subscribe to the image topic
-        #rospy.Subscriber("/usb_cam/image_raw", Image, self.imgReceived)
         rospy.Subscriber("/cameras/right_hand_camera/image", Image, self.imgReceived)
         
         #Create the publisher
-        self.pub = rospy.Publisher('/pokerbot/card', CardList, queue_size=10)
+        self.pub = rospy.Publisher('/pokerbot/card', CardList, queue_size=2)
         self.r = rospy.Rate(100) # 10 hz 
 
     def run(self):

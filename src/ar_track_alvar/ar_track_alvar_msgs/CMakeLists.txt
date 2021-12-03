@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   ${MSG_DEPS}
 )
 
-set(MSG_FILES AlvarMarker.msg AlvarMarkers.msg)
+set(MSG_FILES AlvarMarker.msg AlvarMarkers.msg AlvarCorners.msg)
 add_message_files(DIRECTORY msg FILES ${MSG_FILES})
 generate_messages(DEPENDENCIES ${MSG_DEPS})
 

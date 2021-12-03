@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "ar_track_alvar_msgs: 2 messages, 0 services")
+message(STATUS "ar_track_alvar_msgs: 3 messages, 0 services")
 
 set(MSG_I_FLAGS "-Iar_track_alvar_msgs:/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg;-Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg;-Igeometry_msgs:/opt/ros/kinetic/share/geometry_msgs/cmake/../msg")
 
@@ -22,6 +22,11 @@ add_custom_target(_ar_track_alvar_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ar_track_alvar_msgs" "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" "geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Point:geometry_msgs/PoseStamped:ar_track_alvar_msgs/AlvarMarker"
 )
 
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
+add_custom_target(_ar_track_alvar_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ar_track_alvar_msgs" "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" "std_msgs/Header:geometry_msgs/Point"
+)
+
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_custom_target(_ar_track_alvar_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "ar_track_alvar_msgs" "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" "geometry_msgs/Quaternion:geometry_msgs/PoseStamped:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Point"
@@ -37,6 +42,12 @@ _generate_msg_cpp(ar_track_alvar_msgs
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
   "${MSG_I_FLAGS}"
   "/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ar_track_alvar_msgs
+)
+_generate_msg_cpp(ar_track_alvar_msgs
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/ar_track_alvar_msgs
 )
 _generate_msg_cpp(ar_track_alvar_msgs
@@ -62,6 +73,8 @@ add_dependencies(ar_track_alvar_msgs_generate_messages ar_track_alvar_msgs_gener
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_cpp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
+add_dependencies(ar_track_alvar_msgs_generate_messages_cpp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_cpp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 
@@ -78,6 +91,12 @@ _generate_msg_eus(ar_track_alvar_msgs
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
   "${MSG_I_FLAGS}"
   "/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ar_track_alvar_msgs
+)
+_generate_msg_eus(ar_track_alvar_msgs
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/ar_track_alvar_msgs
 )
 _generate_msg_eus(ar_track_alvar_msgs
@@ -103,6 +122,8 @@ add_dependencies(ar_track_alvar_msgs_generate_messages ar_track_alvar_msgs_gener
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_eus _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
+add_dependencies(ar_track_alvar_msgs_generate_messages_eus _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_eus _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 
@@ -119,6 +140,12 @@ _generate_msg_lisp(ar_track_alvar_msgs
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
   "${MSG_I_FLAGS}"
   "/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ar_track_alvar_msgs
+)
+_generate_msg_lisp(ar_track_alvar_msgs
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/ar_track_alvar_msgs
 )
 _generate_msg_lisp(ar_track_alvar_msgs
@@ -144,6 +171,8 @@ add_dependencies(ar_track_alvar_msgs_generate_messages ar_track_alvar_msgs_gener
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_lisp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
+add_dependencies(ar_track_alvar_msgs_generate_messages_lisp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_lisp _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 
@@ -160,6 +189,12 @@ _generate_msg_nodejs(ar_track_alvar_msgs
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
   "${MSG_I_FLAGS}"
   "/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ar_track_alvar_msgs
+)
+_generate_msg_nodejs(ar_track_alvar_msgs
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/ar_track_alvar_msgs
 )
 _generate_msg_nodejs(ar_track_alvar_msgs
@@ -185,6 +220,8 @@ add_dependencies(ar_track_alvar_msgs_generate_messages ar_track_alvar_msgs_gener
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_nodejs _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
+add_dependencies(ar_track_alvar_msgs_generate_messages_nodejs _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_nodejs _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 
@@ -201,6 +238,12 @@ _generate_msg_py(ar_track_alvar_msgs
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
   "${MSG_I_FLAGS}"
   "/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ar_track_alvar_msgs
+)
+_generate_msg_py(ar_track_alvar_msgs
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
+  "${MSG_I_FLAGS}"
+  "/opt/ros/kinetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/kinetic/share/geometry_msgs/cmake/../msg/Point.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/ar_track_alvar_msgs
 )
 _generate_msg_py(ar_track_alvar_msgs
@@ -225,6 +268,8 @@ add_dependencies(ar_track_alvar_msgs_generate_messages ar_track_alvar_msgs_gener
 
 # add dependencies to all check dependencies targets
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg" NAME_WE)
+add_dependencies(ar_track_alvar_msgs_generate_messages_py _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_py _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg" NAME_WE)
 add_dependencies(ar_track_alvar_msgs_generate_messages_py _ar_track_alvar_msgs_generate_messages_check_deps_${_filename})

@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
+messages_str = "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg;/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
 services_str = ""
 pkg_name = "ar_track_alvar_msgs"
 dependencies_str = "std_msgs;geometry_msgs"

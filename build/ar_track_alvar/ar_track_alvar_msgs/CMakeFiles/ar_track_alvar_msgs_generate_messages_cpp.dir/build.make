@@ -54,6 +54,7 @@ CMAKE_BINARY_DIR = /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot
 include ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/progress.make
 
 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarkers.h
+ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h
 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h
 
 
@@ -69,6 +70,14 @@ ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messa
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Generating C++ code from ar_track_alvar_msgs/AlvarMarkers.msg"
 	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs && /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/catkin_generated/env_cached.sh /usr/bin/python2 /opt/ros/kinetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg -Iar_track_alvar_msgs:/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg -Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/kinetic/share/geometry_msgs/cmake/../msg -p ar_track_alvar_msgs -o /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs -e /opt/ros/kinetic/share/gencpp/cmake/..
 
+/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h: /opt/ros/kinetic/lib/gencpp/gen_cpp.py
+/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg
+/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h: /opt/ros/kinetic/share/std_msgs/msg/Header.msg
+/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h: /opt/ros/kinetic/share/geometry_msgs/msg/Point.msg
+/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h: /opt/ros/kinetic/share/gencpp/msg.h.template
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating C++ code from ar_track_alvar_msgs/AlvarCorners.msg"
+	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs && /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/catkin_generated/env_cached.sh /usr/bin/python2 /opt/ros/kinetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg -Iar_track_alvar_msgs:/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg -Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/kinetic/share/geometry_msgs/cmake/../msg -p ar_track_alvar_msgs -o /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs -e /opt/ros/kinetic/share/gencpp/cmake/..
+
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /opt/ros/kinetic/lib/gencpp/gen_cpp.py
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /opt/ros/kinetic/share/geometry_msgs/msg/Quaternion.msg
@@ -77,11 +86,12 @@ ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messa
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /opt/ros/kinetic/share/std_msgs/msg/Header.msg
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /opt/ros/kinetic/share/geometry_msgs/msg/Point.msg
 /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h: /opt/ros/kinetic/share/gencpp/msg.h.template
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating C++ code from ar_track_alvar_msgs/AlvarMarker.msg"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating C++ code from ar_track_alvar_msgs/AlvarMarker.msg"
 	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs && /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/catkin_generated/env_cached.sh /usr/bin/python2 /opt/ros/kinetic/share/gencpp/cmake/../../../lib/gencpp/gen_cpp.py /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg -Iar_track_alvar_msgs:/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg -Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg -Igeometry_msgs:/opt/ros/kinetic/share/geometry_msgs/cmake/../msg -p ar_track_alvar_msgs -o /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs -e /opt/ros/kinetic/share/gencpp/cmake/..
 
 ar_track_alvar_msgs_generate_messages_cpp: ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp
 ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarkers.h
+ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarCorners.h
 ar_track_alvar_msgs_generate_messages_cpp: /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include/ar_track_alvar_msgs/AlvarMarker.h
 ar_track_alvar_msgs_generate_messages_cpp: ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/build.make
 

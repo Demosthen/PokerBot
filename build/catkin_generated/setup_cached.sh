@@ -8,4 +8,3 @@
 
 # modified environment variables
 export PWD='/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build'
-export PYTHONPATH="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/lib/python2.7/dist-packages:$PYTHONPATH"

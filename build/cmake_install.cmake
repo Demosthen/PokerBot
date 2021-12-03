@@ -130,6 +130,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/lab4_cam/cmake_install.cmake")
   include("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/ar_track_alvar/ar_track_alvar/cmake_install.cmake")
   include("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/vision/cmake_install.cmake")
+  include("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build/planning/cmake_install.cmake")
 
 endif()
 

@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp"
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/common-lisp/ros/ar_track_alvar_msgs/msg/AlvarMarkers.lisp"
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/common-lisp/ros/ar_track_alvar_msgs/msg/AlvarCorners.lisp"
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/common-lisp/ros/ar_track_alvar_msgs/msg/AlvarMarker.lisp"
 )
 

@@ -36,6 +36,7 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ar_track_alvar_msgs/msg" TYPE FILE FILES
     "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarker.msg"
     "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarMarkers.msg"
+    "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/ar_track_alvar/ar_track_alvar_msgs/msg/AlvarCorners.msg"
     )
 endif()
 

@@ -22,12 +22,23 @@
  */
 
 #include "ar_track_alvar/MarkerDetector.h"
+#include "ar_track_alvar_msgs/AlvarCorners.h"
+#include <cv_bridge/cv_bridge.h>
+#include <tf/transform_listener.h>
+#include <tf/transform_broadcaster.h>
+#include <sensor_msgs/image_encodings.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <dynamic_reconfigure/server.h>
+#include <ar_track_alvar/ParamsConfig.h>
+#include <Eigen/StdVector>
 
 template class ALVAR_EXPORT alvar::MarkerDetector<alvar::Marker>;
 template class ALVAR_EXPORT alvar::MarkerDetector<alvar::MarkerData>;
 template class ALVAR_EXPORT alvar::MarkerDetector<alvar::MarkerArtoolkit>;
 
 using namespace std;
+
+ros::Publisher pub;
 
 namespace alvar {
 	MarkerDetectorImpl::MarkerDetectorImpl() {
@@ -87,6 +98,11 @@ namespace alvar {
 		assert(image->origin == 0); // Currently only top-left origin supported
 		double error=-1;
 
+		ros::NodeHandle n, pn("~");
+		if (!pub) {
+			pub = n.advertise<ar_track_alvar_msgs::AlvarCorners>("ar_corners", 5);
+		}
+
 		// Swap marker tables
 		_swap_marker_tables();
 		_markers_clear();
@@ -131,6 +147,21 @@ namespace alvar {
 					mn->SetError(Marker::TRACK_ERROR, track_error);
                     mn->UpdateContent(blob_corners[track_i], gray, cam);    //Maybe should only do this when kinect is being used? Don't think it hurts anything...
 					mn->UpdatePose(blob_corners[track_i], cam, track_orientation, update_pose);
+
+					ar_track_alvar_msgs::AlvarCorners msg;
+					for (int i = 0; i < 4; i++) {
+						printf("Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
+						printf("Corner %i: y = %lf\n", i, blob_corners[track_i][i].y);
+						geometry_msgs::Point point;
+						point.x = blob_corners[track_i][i].x;
+						point.y = blob_corners[track_i][i].y;
+						msg.corners[i] = point;
+						// msg.data = blob_corners[track_i][i].x;
+						
+   						// sprintf(str->data, "Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
+					}
+					pub.publish(msg);
+					// ROS_INFO("%d", blob_corners[track_i].size());
 					_markers_push_back(mn);
 					blob_corners[track_i].clear(); // We don't want to handle this again...
 					if (visualize) mn->Visualize(image, cam, CV_RGB(255,255,0));

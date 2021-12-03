@@ -99,6 +99,18 @@ install/strip/fast: install/strip
 
 .PHONY : install/strip/fast
 
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
 # Special rule for the target install/local
 install/local: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
@@ -120,18 +132,6 @@ test:
 test/fast: test
 
 .PHONY : test/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -164,6 +164,21 @@ preinstall/fast:
 depend:
 	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
+
+# Convenience name for target.
+ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule:
+	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
+.PHONY : ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
+
+# Convenience name for target.
+ar_track_alvar_msgs_gennodejs: ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
+
+.PHONY : ar_track_alvar_msgs_gennodejs
+
+# fast build rule for target.
+ar_track_alvar_msgs_gennodejs/fast:
+	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build.make ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build
+.PHONY : ar_track_alvar_msgs_gennodejs/fast
 
 # Convenience name for target.
 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule:
@@ -346,6 +361,21 @@ geometry_msgs_generate_messages_py/fast:
 .PHONY : geometry_msgs_generate_messages_py/fast
 
 # Convenience name for target.
+ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/rule:
+	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/rule
+.PHONY : ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/rule
+
+# Convenience name for target.
+_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners: ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/rule
+
+.PHONY : _ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners
+
+# fast build rule for target.
+_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners/fast:
+	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/build.make ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners.dir/build
+.PHONY : _ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners/fast
+
+# Convenience name for target.
 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule:
 	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule
 .PHONY : ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule
@@ -510,21 +540,6 @@ ar_track_alvar_msgs_generate_messages_nodejs/fast:
 	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_nodejs/fast
 
-# Convenience name for target.
-ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule:
-	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
-.PHONY : ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
-
-# Convenience name for target.
-ar_track_alvar_msgs_gennodejs: ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
-
-.PHONY : ar_track_alvar_msgs_gennodejs
-
-# fast build rule for target.
-ar_track_alvar_msgs_gennodejs/fast:
-	cd /home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/build && $(MAKE) -f ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build.make ar_track_alvar/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build
-.PHONY : ar_track_alvar_msgs_gennodejs/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -535,6 +550,8 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... install/strip"
+	@echo "... install"
+	@echo "... ar_track_alvar_msgs_gennodejs"
 	@echo "... geometry_msgs_generate_messages_eus"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... geometry_msgs_generate_messages_nodejs"
@@ -548,6 +565,7 @@ help:
 	@echo "... _catkin_empty_exported_target"
 	@echo "... std_msgs_generate_messages_eus"
 	@echo "... geometry_msgs_generate_messages_py"
+	@echo "... _ar_track_alvar_msgs_generate_messages_check_deps_AlvarCorners"
 	@echo "... ar_track_alvar_msgs_geneus"
 	@echo "... geometry_msgs_generate_messages_lisp"
 	@echo "... std_msgs_generate_messages_lisp"
@@ -560,8 +578,6 @@ help:
 	@echo "... ar_track_alvar_msgs_generate_messages_lisp"
 	@echo "... ar_track_alvar_msgs_gencpp"
 	@echo "... ar_track_alvar_msgs_generate_messages_nodejs"
-	@echo "... install"
-	@echo "... ar_track_alvar_msgs_gennodejs"
 .PHONY : help
 
 

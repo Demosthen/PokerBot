@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/ar_track_alvar_msgs_generate_messages_eus"
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/roseus/ros/ar_track_alvar_msgs/msg/AlvarMarkers.l"
+  "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/roseus/ros/ar_track_alvar_msgs/msg/AlvarCorners.l"
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/roseus/ros/ar_track_alvar_msgs/msg/AlvarMarker.l"
   "/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/share/roseus/ros/ar_track_alvar_msgs/manifest.l"
 )

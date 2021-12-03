@@ -6,6 +6,8 @@
                :std_msgs-msg
 )
   :components ((:file "_package")
+    (:file "AlvarCorners" :depends-on ("_package_AlvarCorners"))
+    (:file "_package_AlvarCorners" :depends-on ("_package"))
     (:file "AlvarMarker" :depends-on ("_package_AlvarMarker"))
     (:file "_package_AlvarMarker" :depends-on ("_package"))
     (:file "AlvarMarkers" :depends-on ("_package_AlvarMarkers"))
