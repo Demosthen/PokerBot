@@ -3,6 +3,6 @@ prefix=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/install
 Name: vision
 Description: Description of vision
 Version: 0.0.0
-Cflags: 
+Cflags: -I${prefix}/include
 Libs: -L${prefix}/lib 
-Requires: 
+Requires: baxter_tools geometry_msgs moveit_msgs roscpp rospy sensor_msgs std_msgs tf2_ros message_runtime

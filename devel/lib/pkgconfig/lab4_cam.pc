@@ -1,0 +1,8 @@
+prefix=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel
+
+Name: lab4_cam
+Description: Description of lab4_cam
+Version: 0.0.0
+Cflags: -I/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel/include
+Libs: -L${prefix}/lib 
+Requires: 

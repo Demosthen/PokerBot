@@ -13,17 +13,21 @@ class ImageDetector():
             batch_size=1
         )
 
-    def detect(self, img, thresh):
+    def detect(self, img, thresh, draw_image=False, **kwargs):
         # Darknet doesn't accept numpy images.
         # Create one with image we reuse for each detect
         width = darknet.network_width(self.network)
         height = darknet.network_height(self.network)
         darknet_image = darknet.make_image(width, height, 3)
 
-        image = cv2.imread("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/test.jpg")
-        import pdb; pdb.set_trace()
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # uncomment if ros gives us BGR
-        print("pre resize")
+        #image = cv2.imread("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/test.jpg")
+        #
+        #center crop
+        min_dim = min(img.shape[0], img.shape[1])
+        x = img.shape[1]//2 - min_dim//2
+        y = img.shape[0]//2 - min_dim//2
+        img = img[y: y + min_dim, x: x + min_dim]
+        image_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # uncomment if ros gives us BGR
         image_resized = cv2.resize(image_rgb, (width, height),
                                 interpolation=cv2.INTER_LINEAR)
         #image_resized = np.array(skimage.transform.resize(img, (width, height)))
@@ -31,10 +35,13 @@ class ImageDetector():
         #print(darknet_image)
         #darknet_image = darknet.nparray_to_image(image_resized)
         darknet.copy_image_from_bytes(darknet_image, image_resized.tobytes())
-        print(self.class_names)
-        detections = darknet.detect_image(self.network, self.class_names, darknet_image, thresh=thresh)
-        image = darknet.draw_boxes(detections, image_resized, self.class_colors)
+        detections = darknet.detect_image(self.network, self.class_names, darknet_image, thresh=thresh, **kwargs)
+        image=None
+        if draw_image:
+            image = darknet.draw_boxes(detections, image_resized, self.class_colors)
         #image = image[:, :, ::-1] # BGR to RGB
+            cv2.imwrite('file.png', cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        
         return image, detections
         #return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
@@ -69,7 +76,7 @@ if __name__ == "__main__":
     detector = ImageDetector(
         config_file="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/custom_yolo.config",
         data_file="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/cards.data",
-        weights="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/weights/backup/yolov4-tiny-custom_30000.weights")
+        weights="/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/weights/backup/yolov4-tiny-custom_40000.weights")
     print("cv2")
     im = np.array(skimage.io.imread("/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/src/vision/src/PokerBot/darknet/test.jpg"))
 
