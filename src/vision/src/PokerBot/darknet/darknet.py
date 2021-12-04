@@ -230,6 +230,11 @@ def detect_image(network, class_names, image, thresh=.5, hier_thresh=.5, nms=.45
     free_detections(detections, num)
     return sorted(predictions, key=lambda x: x[1])
 
+# def nparray_to_image(img):
+#     data = img.ctypes.data_as(POINTER(c_ubyte))
+#     image = ndarray_image(data, img.ctypes.shape, img.ctypes.strides)
+
+#     return image
 
 if os.name == "posix":
     cwd = os.path.dirname(__file__)
@@ -316,6 +321,10 @@ lib.get_metadata.restype = METADATA
 load_image = lib.load_image_color
 load_image.argtypes = [c_char_p, c_int, c_int]
 load_image.restype = IMAGE
+
+# ndarray_image = lib.ndarray_to_image
+# ndarray_image.argtypes = [POINTER(c_ubyte), POINTER(c_long), POINTER(c_long)]
+# ndarray_image.restype = IMAGE
 
 rgbgr_image = lib.rgbgr_image
 rgbgr_image.argtypes = [IMAGE]
