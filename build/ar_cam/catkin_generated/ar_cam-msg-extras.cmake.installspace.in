@@ -1,0 +1,2 @@
+set(ar_cam_MESSAGE_FILES "")
+set(ar_cam_SERVICE_FILES "srv/ImageSrv.srv")

@@ -10,6 +10,11 @@ from std_msgs.msg import String
 from my_chatter.msg import TimestampString
 from geometry_msgs.msg import Point
 
+Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
+Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
+Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
+
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
 # argument to callback().
@@ -18,25 +23,13 @@ def callback(message):
     # alternatively, call a function in a different file to implement
     
     planner = PathPlanner("left_arm")
-
-    if ROBOT == "sawyer":
-        Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
-        Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-        Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-        Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-    else:
-        Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
-        Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-        Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-        Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-
     controller = Controller(Kp, Ki, Kd, Kw, Limb('left'))
 
-    #Call the gameplay class with the list of points as input
+    #Initiates the gameplay class with the list of points as input
     # returns the point object that 
+    play = gameplay(message)
 
-    my_play = gameplay(message)
-    
+    my_play = play.compare_cards()
 
     orien_const = OrientationConstraint()
     orien_const.link_name = "left_gripper"
@@ -47,9 +40,10 @@ def callback(message):
     orien_const.absolute_z_axis_tolerance = 0.1
     orien_const.weight = 1.0
 
-    # read in the heard point, call path planner
+    # read in the heard point
     while not rospy.is_shutdown():
 
+        #START OF FIRST LOOP FOR A SINGULAR PATH    
         while not rospy.is_shutdown():
             try:
                 # account for gripper size so it doesn't crash 
@@ -62,9 +56,9 @@ def callback(message):
                 card_loc.header.frame_id = "base"
 
                 #x, y, and z position
-                card_loc.pose.position.x = message.x + x
-                card_loc.pose.position.y = message.y + y
-                card_loc.pose.position.z = message.z + z
+                card_loc.pose.position.x = my_play.x + x
+                card_loc.pose.position.y = my_play.y + y
+                card_loc.pose.position.z = my_play.z + z
 
                 #Orientation as a quaternion
                 card_loc.pose.orientation.x = 0.0
