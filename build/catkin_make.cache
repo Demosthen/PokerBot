@@ -1,2 +1,0 @@
-ar_track_alvar/ar_track_alvar:ar_track_alvar/ar_track_alvar_msgs:lab4_cam:planning:vision
--DCATKIN_DEVEL_PREFIX=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/devel -DCMAKE_INSTALL_PREFIX=/home/cc/ee106a/fl21/class/ee106a-afr/ros_workspaces/pokerbot/install -G Unix Makefiles
