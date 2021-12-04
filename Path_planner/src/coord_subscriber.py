@@ -8,7 +8,7 @@ import rospy
 
 from std_msgs.msg import String
 from my_chatter.msg import TimestampString
-from geometry_msgs.msg import Point.msg
+from geometry_msgs.msg import Point
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
@@ -16,6 +16,7 @@ from geometry_msgs.msg import Point.msg
 def callback(message):
     #input the logic, create a posestamp object and input the point coords into it
     # alternatively, call a function in a different file to implement
+    
     planner = PathPlanner("left_arm")
 
     if ROBOT == "sawyer":
@@ -31,6 +32,11 @@ def callback(message):
 
     controller = Controller(Kp, Ki, Kd, Kw, Limb('left'))
 
+    #Call the gameplay class with the list of points as input
+    # returns the point object that 
+
+    my_play = gameplay(message)
+    
 
     orien_const = OrientationConstraint()
     orien_const.link_name = "left_gripper"
@@ -90,7 +96,8 @@ def listener():
     # receive messages of type std_msgs/String from the topic /chatter_talk.
     # Whenever a new message is received, the method callback() will be called
     # with the received message as its first argument.
-    rospy.Subscriber("point_cloud_publisher", Point.msg, callback)
+    # Redefined message as List of Points
+    rospy.Subscriber("point_cloud_publisher", List, callback)
 
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
