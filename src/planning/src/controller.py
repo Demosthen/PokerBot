@@ -95,7 +95,7 @@ class Controller(object):
         self._limb.set_joint_velocities(dict(itertools.izip(self._limb.joint_names(), np.zeros(len(self._limb.joint_names())))))
         rospy.sleep(0.1)
 
-    def execute_path(self, path, timeout=100.0, log=False):
+    def execute_path(self, path, timeout=100.0, log=True):
         """
         Execute a given path
 

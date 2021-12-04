@@ -16,6 +16,8 @@ class ImageDetector():
     def detect(self, img, thresh, draw_image=False, **kwargs):
         # Darknet doesn't accept numpy images.
         # Create one with image we reuse for each detect
+        orig_width = img.shape[0]
+        orig_height = img.shape[1]
         width = darknet.network_width(self.network)
         height = darknet.network_height(self.network)
         darknet_image = darknet.make_image(width, height, 3)
@@ -41,7 +43,12 @@ class ImageDetector():
             image = darknet.draw_boxes(detections, image_resized, self.class_colors)
         #image = image[:, :, ::-1] # BGR to RGB
             cv2.imwrite('file.png', cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-        
+        new_detections = []
+        detections = [list(detection) for detection in detections]
+        for detection in detections:
+            detect_y = detection[2][0] * min_dim / width + x
+            detect_x = detection[2][1] * min_dim / height + y
+            detection[2] = (detect_y, detect_x)
         return image, detections
         #return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 

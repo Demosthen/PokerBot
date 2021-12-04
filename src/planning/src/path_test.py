@@ -22,7 +22,7 @@ from geometry_msgs.msg import PoseStamped
 
 from path_planner import PathPlanner
 try:
-    from controller import Controller
+    from planning.src.original_controller import Controller
 except ImportError:
     pass
     

@@ -5,15 +5,21 @@
 
 # Import the dependencies as described in example_pub.py
 import rospy
-
-from std_msgs.msg import String
-from my_chatter.msg import TimestampString
-from geometry_msgs.msg import Point
+import numpy as np
+from path_planner import PathPlanner
+from controller import Controller
+from baxter_interface import Limb
+from gameplay import gameplay
+from moveit_msgs.msg import OrientationConstraint
+from geometry_msgs.msg import PoseStamped
 
 Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
 Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
 Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
 Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
+
+# planner = PathPlanner("right_arm")
+# controller = Controller(Kp, Ki, Kd, Kw, Limb('right'))
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
@@ -21,9 +27,6 @@ Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
 def callback(message):
     #input the logic, create a posestamp object and input the point coords into it
     # alternatively, call a function in a different file to implement
-    
-    planner = PathPlanner("left_arm")
-    controller = Controller(Kp, Ki, Kd, Kw, Limb('left'))
 
     #Initiates the gameplay class with the list of points as input
     # returns the point object that 
@@ -39,46 +42,35 @@ def callback(message):
     orien_const.absolute_y_axis_tolerance = 0.1
     orien_const.absolute_z_axis_tolerance = 0.1
     orien_const.weight = 1.0
+    try:
+        # account for gripper size so it doesn't crash 
+        # directly into the card's coordinates
+        x, y, z = 0, 0, 0.8
+        card_loc = PoseStamped()
+        card_loc.header.frame_id = "base"
 
-    # read in the heard point
-    while not rospy.is_shutdown():
+        #x, y, and z position
+        card_loc.pose.position.x = my_play.x + x
+        card_loc.pose.position.y = my_play.y + y
+        card_loc.pose.position.z = my_play.z + z
 
-        #START OF FIRST LOOP FOR A SINGULAR PATH    
-        while not rospy.is_shutdown():
-            try:
-                # account for gripper size so it doesn't crash 
-                # directly into the card's coordinates
-                if ROBOT == "baxter":
-                    x, y, z = 0, 0, 0.8
-                '''else:
-                    x, y, z = 0.8, 0.05, 0.07'''
-                card_loc = PoseStamped()
-                card_loc.header.frame_id = "base"
+        #Orientation as a quaternion
+        card_loc.pose.orientation.x = 0.0
+        card_loc.pose.orientation.y = -1.0
+        card_loc.pose.orientation.z = 0.0
+        card_loc.pose.orientation.w = 0.0
 
-                #x, y, and z position
-                card_loc.pose.position.x = my_play.x + x
-                card_loc.pose.position.y = my_play.y + y
-                card_loc.pose.position.z = my_play.z + z
+        # run the pose stamped object through planner
+        plan = planner.plan_to_pose(card_loc, [])
 
-                #Orientation as a quaternion
-                card_loc.pose.orientation.x = 0.0
-                card_loc.pose.orientation.y = -1.0
-                card_loc.pose.orientation.z = 0.0
-                card_loc.pose.orientation.w = 0.0
-
-                # run the pose stamped object through planner
-                plan = planner.plan_to_pose(card_loc, [])
-
-                raw_input("Press <Enter> to move the right arm to position of first card: ")
-                # if not planner.execute_plan(plan):
-                #     raise Exception("Execution failed")
-                if not controller.execute_path(plan):
-                    raise Exception("Execution failed")
-            except Exception as e:
-                print e
-                traceback.print_exc()
-            else:
-                break
+        raw_input("Press <Enter> to move the right arm to position of first card: ")
+        # if not planner.execute_plan(plan):
+        #     raise Exception("Execution failed")
+        if not controller.execute_path(plan):
+            raise Exception("Execution failed")
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
 
     # Print the contents of the message to the console
     print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
@@ -105,6 +97,26 @@ if __name__ == '__main__':
     # /listener_<id>, where <id> is a randomly generated numeric string. This
     # randomly generated name means we can start multiple copies of this node
     # without having multiple nodes with the same name, which ROS doesn't allow.
-    rospy.init_node('my_listener', anonymous=True)
+    # rospy.init_node('my_listener', anonymous=True)
 
-    listener()
+    # listener()
+    rospy.init_node('moveit_node')
+    planner = PathPlanner("right_arm")
+    controller = Controller(Kp, Ki, Kd, Kw, Limb('right'))
+    card_loc = PoseStamped()
+    card_loc.header.frame_id = "base"
+
+    #x, y, and z position
+    card_loc.pose.position.x = 0.471
+    card_loc.pose.position.y = 0.252
+    card_loc.pose.position.z = 0.048
+
+    # Translation: [0.871, -0.252, 0.048]
+
+    #Orientation as a quaternion
+    card_loc.pose.orientation.x = 0.0
+    card_loc.pose.orientation.y = -1.0
+    card_loc.pose.orientation.z = 0.0
+    card_loc.pose.orientation.w = 0.0
+    planner.plan_to_pose(card_loc, [])
+
