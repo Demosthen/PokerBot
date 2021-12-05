@@ -5,6 +5,7 @@
 
 # Import the dependencies as described in example_pub.py
 import rospy
+import sys
 import numpy as np
 from path_planner import PathPlanner
 from controller import Controller
@@ -76,7 +77,7 @@ def callback(message):
     print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
 
 # Define the method which contains the node's main functionality
-def listener():
+"""def listener():
 
     # Create a new instance of the rospy.Subscriber object which we can use to
     # receive messages of type std_msgs/String from the topic /chatter_talk.
@@ -88,6 +89,19 @@ def listener():
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
     rospy.spin()
+"""
+
+def twodto3d():
+    rospy.wait_for_service('twod_to_3d')
+    
+    #need to change out service class
+    two_to_3d = rospy.ServiceProxy('twod_to_3d', CardList)
+
+    try:
+        calling = two_to_3d
+    except rospy.ServiceException as exc:
+        print("Service did not process request: " + str(exc))
+    return 1
 
 
 # Python's syntax for a main() method

@@ -17,7 +17,7 @@ class gameplay(object):
         current_cards: the list of Point objects and strings of all
         the cards currently on the table. The most recently
         played card index 0.
-        [[Point, "4D"], [Point, "6H"], ...]
+        [["4D", Point], ["10H", Point], ...]
         
         """
         self.center_card = current_cards[0]
@@ -31,7 +31,8 @@ class gameplay(object):
         for card in self.baxter_hand:
             # Card[0] accesses the coords, Card[1] is the string that contains the type
             # if either the card number or the suite is the same
-            if card[1].charAt(0) == center_card[1].charAt(0) or card[1].charAt(1) == center_card[1].charAt(1):
+            ll = len(card[0])
+            if card[0].charAt(ll-1) == center_card[0].charAt(ll-1) or card[1][0:ll-2] == center_card[1][0:ll-2]:
                 target_card = card
            
         # if baxter has a card that it can play, switch gamestate to player turn
@@ -44,7 +45,8 @@ class gameplay(object):
         return target_card
 
     def birdseye_pose():
-        target = Point(x, y, z)
+        # Translation: [0.871, -0.252, 0.048]
+        target = Point(0.871, -0.252, 0.048)
         return [target, " "]
 
 
