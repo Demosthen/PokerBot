@@ -150,8 +150,8 @@ namespace alvar {
 
 					ar_track_alvar_msgs::AlvarCorners msg;
 					for (int i = 0; i < 4; i++) {
-						printf("Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
-						printf("Corner %i: y = %lf\n", i, blob_corners[track_i][i].y);
+						// printf("Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
+						// printf("Corner %i: y = %lf\n", i, blob_corners[track_i][i].y);
 						geometry_msgs::Point point;
 						point.x = blob_corners[track_i][i].x;
 						point.y = blob_corners[track_i][i].y;

@@ -1,0 +1,11 @@
+<launch>
+   <!-- Card detection/localization -->
+  <node name="cam_listener" pkg="vision" type="vision_node.py" />
+  <include file="$(find lab4_cam)/launch/ar_track.launch"/>
+  <node name="twod_to_3d" pkg="vision" type="2d_to_3d.py"/>
+
+   <!-- Launch moveit -->
+  <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch">
+    <arg name="right_electric_gripper" value="true"/>
+  </include>
+</launch>
