@@ -22,7 +22,7 @@ from geometry_msgs.msg import PoseStamped
 
 from path_planner import PathPlanner
 try:
-    from planning.src.original_controller import Controller
+    from original_controller import Controller
 except ImportError:
     pass
     
@@ -64,7 +64,7 @@ def main():
         while not rospy.is_shutdown():
             try:
                 if ROBOT == "baxter":
-                    x, y, z = 0.920, -0.328, -0.004
+                    x, y, z = 0.220, -0.328, -0.004
                 else:
                     x, y, z = 0.8, 0.05, 0.07
                 goal_1 = PoseStamped()

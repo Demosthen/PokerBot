@@ -6,6 +6,7 @@ from card_detector import *
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from vision.msg import CardList
+from geometry_msgs.msg import Point
 
 from collections import OrderedDict
 
@@ -33,7 +34,7 @@ class VisionPublisher:
         msg = CardList()
         msg.count = len(card_dict)
         msg.cards = card_dict.keys()
-        msg.coords = [[card_dict[item][1], card_dict[item][2]] for item in card_dict]
+        msg.coords = [Point(card_dict[item][1], card_dict[item][2], 0) for item in card_dict]
         print(msg)
         self.pub.publish(msg)
 
