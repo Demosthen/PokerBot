@@ -6,6 +6,7 @@ from card_detector import *
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from vision.msg import CardList
+from geometry_msgs.msg import Point
 
 from collections import OrderedDict
 
@@ -15,7 +16,7 @@ class VisionPublisher:
         #Save the image in the instance variable
         # self.lastImage = img
         im = self.bridge.imgmsg_to_cv2(img)
-        r = self.net.detect(im, 0.5, draw_image=True, nms=0.6)[1]
+        r = self.net.detect(im, 0.5, nms=0.6)[1]
         r.reverse()
         #Print an alert to the console
         card_dict = OrderedDict()
@@ -33,8 +34,8 @@ class VisionPublisher:
         msg = CardList()
         msg.count = len(card_dict)
         msg.cards = card_dict.keys()
-        msg.coords = [[card_dict[item][1], card_dict[item][2]] for item in card_dict]
-        print(msg)
+        msg.coords = [Point(card_dict[item][1], card_dict[item][2], 0) for item in card_dict]
+        # print(msg)
         self.pub.publish(msg)
 
     def __init__(self):

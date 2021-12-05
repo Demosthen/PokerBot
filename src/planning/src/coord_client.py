@@ -121,10 +121,10 @@ if __name__ == '__main__':
     card_loc.header.frame_id = "base"
 
     #x, y, and z position
-    card_loc.pose.position.x = 0.471
-    card_loc.pose.position.y = 0.252
-    card_loc.pose.position.z = 0.048
-
+    card_loc.pose.position.x = 0.862
+    card_loc.pose.position.y = -0.22
+    card_loc.pose.position.z = 0.041
+# [0.862, -0.220, 0.041]
     # Translation: [0.871, -0.252, 0.048]
 
     #Orientation as a quaternion
