@@ -28,24 +28,23 @@ class gameplay(object):
         self.client = Coord_Client()
         self.planner = PathPlanner("right_arm")
         self.current_cards =  self.client.twodto3d()
-        self.deck_of_cards = current_cards[1][1]
+        self.deck_of_cards = current_cards[1][0]
         print("the deck of cards is located at: " + self.deck_of_cards)
 
         # User Confirmation request
         raw_input("Press <Enter> to start the game! ")
         self.game_state = "start"   
-        self.target_card = []
         self.baxter_hand = []
+        self.free_spaces = []
         # Baxter draws 4 cards for itself
         self.draw_card()
+        print("Baxter's hand includes: " + self.baxter_hand)
         
-        # Player plays first, baxter reads in
+        # Player plays first, baxter retarget[0] = target[0] + spaceads in
+        #FIX THIS, BAXTER NEEDS TO BE CENTERED AND ONLY READ CENTER CARD
         self.current_cards =  self.client.twodto3d()
         self.center_card = self.current_cards[0][0]
         print("the center card is: " + self.center_card)
-
-      
-        print("Baxter's hand includes: " + self.baxter_hand)
         self.game_state = "baxter"
         self.compare_cards()
     
@@ -54,17 +53,21 @@ class gameplay(object):
     def compare_cards(self):
         while not rospy.is_shutdown():
             
-            for card in self.baxter_hand:
+            for c in len(self.baxter_hand[0]):
                 # Card[0] contains the card type, Card[1] accesses the coords
                 # if either the card number or the suite is the same
-                
-                if card[-1] == self.center_card[-1] or card[0] == self.center_card[0] or card[1] == self.center_card[1]:
-                    self.pathplan(card)
-                    # baxter has a card that it can play, switch gamestate to player turn
-                    self.turn = "player"
-                    #TO DO: KEEP TRACK OF THE EMPTIED SLOTS TO PLACE NEW CARD NEXT
+                card = self.baxter_hand[0][c]
 
-            if self.target_card == []:
+                if card[-1] == self.center_card[-1] or card[0] == self.center_card[0] or card[1] == self.center_card[1]:
+                    # baxter has a card that it can play, switch gamestate to player turn
+                    self.pathplan(self.baxter_hand[1][c], "pick")
+                    self.pathplan(self.center_card, "place")
+                    self.free_spaces.append(self.baxter_hand[1][c])       
+                    self.baxter_hand[0].remove(c)
+                    self.baxter_hand[1].remove(c)                    
+                    self.turn = "player"
+                    break
+            if self.turn == "baxter":
                 #draw a new card from the deck
                 self.draw_card()
 
@@ -83,26 +86,34 @@ class gameplay(object):
 
     def draw_card(self):
         # Variable for card spacing during placement
-        start = Point(0, 0, 0)
+        target = Point(0, 0, 0) #TO BE CHANGED
         space = 0.5
-
+        
         if self.game_state == "start":
             # Draw 4 cards and play 1 card
             while len(self.baxter_hand[0]) != 4:
-                #goes to the deck
+                #goes to the deck and picks up card
                 self.pathplan(self.deck_of_cards, "pick")
-                #TO DO: picks up card                
-
+        
                 #places card in own hand & look at it
-                self.pathplan(start, "place")
+                moved_card = self.pathplan(target, "place")
+                self.baxter_hand[0].append(moved_card[0])
+                self.baxter_hand[1].append(moved_card[1])
                 #apply offset for next start
-                start[0] = start[0] + space
-                
-                
-            self.target_card = []
+                target[0].x += space
+
         else:
             # Draw a card from deck and place in empty space or add to end of the hand
-            self.pathplan()
+            self.pathplan(self.deck_of_cards, "pick")
+            
+            # If there is free space in its hand, place there
+            if self.free_spaces != []:
+                target = self.free_spaces[0]
+            else:
+                target = self.baxter_hand[1][3]
+                target.x = target.x + space
+            #places card in own hand & look at it
+            self.pathplan(target, "place")
             return 0
 
             
@@ -149,7 +160,7 @@ class gameplay(object):
             else:
                 # the gripper is picking up a card
                 # tell vac to suck in
-                return 0
+                return []
 
 
 
