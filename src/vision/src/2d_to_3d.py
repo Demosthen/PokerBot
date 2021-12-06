@@ -20,7 +20,7 @@ def get_markers(message):
     global markers
     markers = message.markers
     # Print the contents of the message to the console
-    #print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
+    print("Message: %s" % message)
 def get_coords_cards(message):
     global coords, cards
     cards = message.cards
@@ -62,6 +62,12 @@ def pointcloud_projection(req):
 
         tf_coords.append(Point(x, y, z_coord))
         tf_cards.append(card)
+
+
+    # coords_and_cards = zip(tf_coords, tf_cards)
+    # arranged = sorted(coords_and_cards)
+    # tuples = zip(*arranged)
+    # tf_coords, tf_cards = [list(tuple) for tuple in tuples]
     return CardList(tf_cards, tf_coords, len(tf_cards))
 
 

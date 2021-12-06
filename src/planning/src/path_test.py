@@ -4,14 +4,7 @@ Path Planning Script for Lab 7
 Author: Valmik Prabhu
 """
 import sys
-import baxter_interface
-# assert sys.argv[1] in ("sawyer", "baxter")
-# ROBOT = sys.argv[1]
-ROBOT = "baxter"
-if ROBOT == "baxter":
-    from baxter_interface import Limb
-# else:
-#     from intera_interface import Limb
+from baxter_interface import Limb
 
 import rospy
 import numpy as np
@@ -19,6 +12,7 @@ import traceback
 
 from moveit_msgs.msg import OrientationConstraint, RobotTrajectory
 from geometry_msgs.msg import PoseStamped
+import tf
 
 from path_planner import PathPlanner
 try:
@@ -35,46 +29,26 @@ def main():
 
     planner = PathPlanner("right_arm")
 
-    if ROBOT == "sawyer":
-        Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
-        Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-        Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-        Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-    else:
-        Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
-        Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-        Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-        Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
+    # Baxter K-values
+    Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
+    Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
+    Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
 
     controller = Controller(Kp, Ki, Kd, Kw, Limb('right'))
 
-    # #Create a path constraint for the arm
-    # #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
-    # orien_const = OrientationConstraint()
-    # orien_const.link_name = "right_gripper"
-    # orien_const.header.frame_id = "base"
-    # orien_const.orientation.y = -1.0
-    # orien_const.absolute_x_axis_tolerance = 0.1
-    # orien_const.absolute_y_axis_tolerance = 0.1
-    # orien_const.absolute_z_axis_tolerance = 0.1
-    # orien_const.weight = 1.0
-
     while not rospy.is_shutdown():
-
         while not rospy.is_shutdown():
             try:
-                if ROBOT == "baxter":
-                    x, y, z = 0.860, -0.228, -0.004
-                else:
-                    x, y, z = 0.8, 0.05, 0.07
+                # x, y, z = -, -0.228, -0.004
                 goal_1 = PoseStamped()
-                goal_1.header.frame_id = "base"
-
-                # 0.640, -0.154, -0.001]
+                goal_1.header.frame_id = "right_hand_camera"
+                t = tf.TransformListener()
+                # 0.640, -0.154, -0.001
                 #x, y, and z position
-                goal_1.pose.position.x = 0.640
-                goal_1.pose.position.y = -0.154
-                goal_1.pose.position.z = 0.0
+                goal_1.pose.position.x = 0.0300999662754
+                goal_1.pose.position.y = 0.0460
+                goal_1.pose.position.z = 0
 
                 #Orientation as a quaternion
                 goal_1.pose.orientation.x = 0.0
@@ -82,8 +56,11 @@ def main():
                 goal_1.pose.orientation.z = 0.0
                 goal_1.pose.orientation.w = 0.0
 
+                tf.waitforTransform("/base", "/right_hand_camera", rospy.Time(), rospy.Duration(4.0))
+                transd_pose = t.transformPose("base", goal_1)
                 # Might have to edit this . . . 
-                plan = planner.plan_to_pose(goal_1, [])
+                print(transd_pose)
+                plan = planner.plan_to_pose(transd_pose, [])
 
                 raw_input("Press <Enter> to move the right arm to goal pose 1: ")
                 # if not planner.execute_plan(plan):

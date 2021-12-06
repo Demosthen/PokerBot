@@ -23,21 +23,19 @@ from moveit_msgs.msg import MoveGroupAction, MoveGroupGoal, MoveGroupFeedback, M
 
 class Coord_Client():
     def __init__(self):
-        
-        
         self.Kp = 0.45 * np.array([0.8, 2.5, 1.7, 2.2, 2.4, 3, 4])
         self.Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
         self.Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
         self.Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
         
-        planner = PathPlanner("right_arm")
-        controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
+        self.planner = PathPlanner("right_arm")
+        self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
     
 
     #client service proxy creation
     # Whenever the service returns a goal, it will return the nexted list
 
-    def twodto3d():
+    def twodto3d(self):
         rospy.wait_for_service('twod_to_3d')
         two_to_3d = rospy.ServiceProxy('twod_to_3d', CardList)
 
@@ -47,26 +45,16 @@ class Coord_Client():
             print("Service did not process request: " + str(exc))
         return cards_list
 
-
-
     # Define the callback method which is called whenever this node receives a 
     # message on its subscribed topic. The received message is passed as the first
     # argument to callback().
-    def find_cards():
+    def find_cards(self):
         #Initiates the gameplay class with the list of points as input
         # returns the point object that 
-        message = two_to_3d()
-        play = gameplay(message)
+        # message = self.twodto3d()
+        # play = gameplay(message)
 
-        my_play = play.compare_cards()
-        # orien_const = OrientationConstraint()
-        # orien_const.link_name = "left_gripper"
-        # orien_const.header.frame_id = "base"
-        # orien_const.orientation.y = -1.0
-        # orien_const.absolute_x_axis_tolerance = 0.1
-        # orien_const.absolute_y_axis_tolerance = 0.1
-        # orien_const.absolute_z_axis_tolerance = 0.1
-        # orien_const.weight = 1.0
+        # my_play = play.compare_cards()
         try:
             # account for gripper size so it doesn't crash 
             # directly into the card's coordinates
