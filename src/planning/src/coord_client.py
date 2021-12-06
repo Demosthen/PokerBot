@@ -4,7 +4,8 @@
 # use "chmod +x [filename]" to make this script executable.
 
 # Import the dependencies as described in example_pub.py
-import rospy, import roslib; roslib.load_manifest('planning')
+import rospy
+import roslib; roslib.load_manifest('planning')
 import sys
 import numpy as np
 
@@ -58,14 +59,14 @@ class Coord_Client():
         play = gameplay(message)
 
         my_play = play.compare_cards()
-        orien_const = OrientationConstraint()
-        orien_const.link_name = "left_gripper"
-        orien_const.header.frame_id = "base"
-        orien_const.orientation.y = -1.0
-        orien_const.absolute_x_axis_tolerance = 0.1
-        orien_const.absolute_y_axis_tolerance = 0.1
-        orien_const.absolute_z_axis_tolerance = 0.1
-        orien_const.weight = 1.0
+        # orien_const = OrientationConstraint()
+        # orien_const.link_name = "left_gripper"
+        # orien_const.header.frame_id = "base"
+        # orien_const.orientation.y = -1.0
+        # orien_const.absolute_x_axis_tolerance = 0.1
+        # orien_const.absolute_y_axis_tolerance = 0.1
+        # orien_const.absolute_z_axis_tolerance = 0.1
+        # orien_const.weight = 1.0
         try:
             # account for gripper size so it doesn't crash 
             # directly into the card's coordinates

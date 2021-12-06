@@ -5,13 +5,13 @@ Author: Valmik Prabhu
 """
 import sys
 import baxter_interface
-assert sys.argv[1] in ("sawyer", "baxter")
-ROBOT = sys.argv[1]
-
+# assert sys.argv[1] in ("sawyer", "baxter")
+# ROBOT = sys.argv[1]
+ROBOT = "baxter"
 if ROBOT == "baxter":
     from baxter_interface import Limb
-else:
-    from intera_interface import Limb
+# else:
+#     from intera_interface import Limb
 
 import rospy
 import numpy as np
@@ -91,7 +91,7 @@ def main():
                 if not controller.execute_path(plan):
                     raise Exception("Execution failed")
             except Exception as e:
-                print e
+                print(e)
                 traceback.print_exc()
             else:
                 break
@@ -118,7 +118,7 @@ def main():
                 if not controller.execute_path(plan):
                     raise Exception("Execution failed")
             except Exception as e:
-                print e
+                print(e)
             else:
                 break
 
@@ -144,7 +144,7 @@ def main():
                 if not controller.execute_path(plan):
                     raise Exception("Execution failed")
             except Exception as e:
-                print e
+                print(e)
             else:
                 break
 
