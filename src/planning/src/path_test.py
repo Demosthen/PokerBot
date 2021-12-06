@@ -64,16 +64,17 @@ def main():
         while not rospy.is_shutdown():
             try:
                 if ROBOT == "baxter":
-                    x, y, z = 0.220, -0.328, -0.004
+                    x, y, z = 0.860, -0.228, -0.004
                 else:
                     x, y, z = 0.8, 0.05, 0.07
                 goal_1 = PoseStamped()
                 goal_1.header.frame_id = "base"
 
+                # 0.640, -0.154, -0.001]
                 #x, y, and z position
-                goal_1.pose.position.x = x
-                goal_1.pose.position.y = -y
-                goal_1.pose.position.z = z
+                goal_1.pose.position.x = 0.640
+                goal_1.pose.position.y = -0.154
+                goal_1.pose.position.z = 0.0
 
                 #Orientation as a quaternion
                 goal_1.pose.orientation.x = 0.0
