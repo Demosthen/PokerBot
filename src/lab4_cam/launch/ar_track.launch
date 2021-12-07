@@ -1,12 +1,12 @@
 <launch>
 
-    <arg name="marker_size"          default="4.9" />
+    <arg name="marker_size"          default="4.6" />
     <arg name="max_new_marker_error" default="0.05" />
-    <arg name="max_track_error"      default="0.05" />
+    <arg name="max_track_error"      default="0.03" />
 
     <arg name="cam_image_topic"      default="/cameras/right_hand_camera/image" />
     <arg name="cam_info_topic"       default="/cameras/right_hand_camera/camera_info" />
-    <arg name="output_frame"         default="/right_hand_camera" />
+    <arg name="output_frame"         default="/base" />
 
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
 		<param name="marker_size"           type="double" value="$(arg marker_size)" />

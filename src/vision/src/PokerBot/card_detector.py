@@ -42,13 +42,17 @@ class ImageDetector():
         if draw_image:
             image = darknet.draw_boxes(detections, image_resized, self.class_colors)
         #image = image[:, :, ::-1] # BGR to RGB
-            cv2.imwrite('file.png', cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    
+        #v2.imwrite('file.png', cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         new_detections = []
         detections = [list(detection) for detection in detections]
         for detection in detections:
-            detect_y = detection[2][0] * min_dim / width + x
-            detect_x = detection[2][1] * min_dim / height + y
-            detection[2] = (detect_y, detect_x)
+            
+            detect_x = detection[2][0] * orig_width / width + x
+            detect_y = detection[2][1] * min_dim / height + y
+            print(detect_x, detect_y, x, y)
+            detection[2] = (detect_x, detect_y)
+        
         return image, detections
         #return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 

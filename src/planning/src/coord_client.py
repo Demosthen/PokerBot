@@ -12,10 +12,10 @@ import numpy as np
 from path_planner import PathPlanner
 from controller import Controller
 from baxter_interface import Limb
-from gameplay import gameplay
 from moveit_msgs.msg import OrientationConstraint
 from geometry_msgs.msg import PoseStamped
 from vision.msg import CardList
+import time
 
 import rospy
 import actionlib
@@ -30,24 +30,34 @@ class Coord_Client():
         
         self.planner = PathPlanner("right_arm")
         self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
+        
     
 
     #client service proxy creation
     # Whenever the service returns a goal, it will return the nexted list
 
     def twodto3d(self):
-        rospy.wait_for_service('twod_to_3d')
-        two_to_3d = rospy.ServiceProxy('twod_to_3d', CardList)
-
         try:
-            cards_list = two_to_3d
+            cards_list = self.twod_to_3d()
         except rospy.ServiceException as exc:
             print("Service did not process request: " + str(exc))
         return cards_list
 
-    # Define the callback method which is called whenever this node receives a 
-    # message on its subscribed topic. The received message is passed as the first
-    # argument to callback().
+    def move(self, pose, loc):
+        plan = self.planner.plan_to_pose(pose, [])
+        raw_input("Press <Enter> to move the arm to %s " % loc)
+        if not self.controller.execute_path(plan, timeout=300, log=False):
+            raise Exception("Execution failed")
+        print("done")
+
+    def pickup(self):
+        print("picked up")
+        pass
+
+    def release(self):
+        print('released')
+        pass
+
     def find_cards(self):
         #Initiates the gameplay class with the list of points as input
         # returns the point object that 
@@ -58,7 +68,7 @@ class Coord_Client():
         try:
             # account for gripper size so it doesn't crash 
             # directly into the card's coordinates
-            x, y, z = 0, 0, 0.8
+            x, y, z = 0, 0, 0.1
             card_loc = PoseStamped()
             card_loc.header.frame_id = "base"
 
@@ -103,9 +113,9 @@ if __name__ == '__main__':
 
     # listener()
     rospy.init_node('moveit_node')
-    planner = PathPlanner("right_arm")
-    controller = Controller(Kp, Ki, Kd, Kw, Limb('right'))
+    client = Coord_Client()
     card_loc = PoseStamped()
+
     card_loc.header.frame_id = "base"
 
     #x, y, and z position

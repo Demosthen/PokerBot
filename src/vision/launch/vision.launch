@@ -6,6 +6,6 @@
 
    <!-- Launch moveit -->
   <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch">
-    <arg name="right_electric_gripper" value="true"/>
+    <arg name="left_electric_gripper" value="true"/>
   </include>
 </launch>

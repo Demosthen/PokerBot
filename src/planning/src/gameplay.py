@@ -1,17 +1,15 @@
+#!/usr/bin/env python
+import rospy
+from geometry_msgs.msg import Point, PoseStamped
+from coord_client import Coord_Client
+from vision.srv import fuck
+import time
 """
-Gameplay Class: is this the one that controls the entire game??
+Gameplay class that keeps track of the game state,
+baxter's cards and returns a next move.
 """
-
-from geometry_msgs.msg import Point
-from coord_client import twodto3d
-from planning.src.coord_client import Coord_Client
-from planning.src.path_planner import PathPlanner
-
-class gameplay(object):
-    """
-    Gameplay class that keeps track of the game state,
-    baxter's cards and returns a next move.
-    """
+class Gameplay:
+    
     def __init__(self):
         """
         Constructor. 
@@ -26,28 +24,92 @@ class gameplay(object):
         """
         #Initiates coord_client and looks for card deck
         self.client = Coord_Client()
-        self.planner = PathPlanner("right_arm")
-        self.current_cards =  self.client.twodto3d()
-        self.deck_of_cards = current_cards[1][0]
-        print("the deck of cards is located at: " + self.deck_of_cards)
+        self.current_cards = None #self.client.twodto3d()
+        self.deck_of_cards = None #self.current_cards[1][0]
+        self.bev = PoseStamped()
+        self.setup_bev()
+        rospy.wait_for_service('twod_to_3d')
+        self.twod_to_3d = rospy.ServiceProxy('twod_to_3d', fuck)
+        print("IniT COMpLeTE GaMEn ReAdy EtO LLoOPpPoP")
+        #self.go_to_bev()
+        #print("the deck of cards is located at: " + self.deck_of_cards)
 
         # User Confirmation request
-        raw_input("Press <Enter> to start the game! ")
-        self.game_state = "start"   
-        self.baxter_hand = []
-        self.free_spaces = []
-        # Baxter draws 4 cards for itself
-        self.draw_card()
-        print("Baxter's hand includes: " + self.baxter_hand)
+        # raw_input("Press <Enter> to start the game! ")
+        # self.game_state = "start"   
+        # self.baxter_hand = []
+        # self.free_spaces = []
+        # # Baxter draws 4 cards for itself
+        # self.draw_card()
+        # print("Baxter's hand includes: " + self.baxter_hand)
         
-        # Player plays first, baxter retarget[0] = target[0] + spaceads in
-        #FIX THIS, BAXTER NEEDS TO BE CENTERED AND ONLY READ CENTER CARD
-        self.current_cards =  self.client.twodto3d()
-        self.center_card = self.current_cards[0][0]
-        print("the center card is: " + self.center_card)
-        self.game_state = "baxter"
-        self.compare_cards()
-    
+        # # Player plays first, baxter retarget[0] = target[0] + spaceads in
+        # #FIX THIS, BAXTER NEEDS TO BE CENTERED AND ONLY READ CENTER CARD
+        # self.current_cards =  self.client.twodto3d()
+        # self.center_card = self.current_cards[0][0]
+        # print("the center card is: " + self.center_card)
+        # self.game_state = "baxter"
+        # self.compare_cards()
+
+    def setup_bev(self):
+        self.bev.header.frame_id = "base"
+        self.bev.pose.position.x = 0.736
+        self.bev.pose.position.y = -0.234
+        self.bev.pose.position.z = -0.035
+        self.bev.pose.orientation.x = 0
+        self.bev.pose.orientation.y = -1
+        self.bev.pose.orientation.z = 0
+        self.bev.pose.orientation.w = 0
+
+    def go_to_bev(self):
+        self.client.move(self.bev, "bev")
+
+    def move_card(self, card_list, coord_list, card, dest):
+        assert len(card_list) == len(coord_list)
+        coords = None
+        for c, cd in zip(card_list, coord_list):
+            if c == card:
+                coords = cd
+                break
+        assert coords != None
+        card_pose = self.make_pose(coords)
+        self.client.move(card_pose, "cArD")
+        self.client.pickup() # TODO:
+        self.client.move(dest, "cEntErRrr")
+        self.client.release() # TODO:
+
+    def make_pose(self, point):
+        pose = PoseStamped()
+        pose.header.frame_id = "base"
+        pose.pose.position.x = point.x
+        pose.pose.position.y = point.y
+        pose.pose.position.z = max(point.z, -0.135)
+        pose.pose.orientation = self.bev.pose.orientation
+        return pose
+
+    def loop(self):
+        while not rospy.is_shutdown():
+            self.go_to_bev()
+            rospy.sleep(2) # wait for images to go to 2d 2 3d
+            fuckResponse = self.twod_to_3d()
+            print("cArD lIsT: ", fuckResponse)
+            cards = fuckResponse.cards.cards
+            coords = fuckResponse.cards.coords
+            
+            center_card = cards[0]
+            center_coord = coords[0]
+            hand_cards = cards[1:]
+            hand_coords = coords[1:]
+            print("cEnTeR CaRD", center_card)
+            print("hAnDS CaRdS", hand_cards)
+            card_to_move = self.pick_card(hand_cards)
+            self.move_card(cards, coords, card_to_move, self.make_pose(center_coord))
+
+    def pick_card(self, hand): #TODO
+        return hand[0]
+
+
+        
 
     # Compares the most recently played card to its own, and 
     def compare_cards(self):
@@ -77,9 +139,8 @@ class gameplay(object):
             if len(self.baxter_hand) == 0:
                 print("Baxter wins!")   
                 break
-        
-
-        
+     
+    
             
 
 
@@ -178,7 +239,10 @@ def main():
     point1 = Point(1, 1, 1)
     point2 = Point(2, 1, 1)
     point3 = Point(3, 1, 1)
- 
+    rospy.init_node('win_node')
     cards = [["4D","10H","2C"], [point1, point2, point3]]
-    gameplay(cards)
-main()
+    #Gameplay(cards)
+    gameplay = Gameplay()
+    gameplay.loop()
+if __name__ == "__main__":
+    main()

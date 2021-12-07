@@ -3,6 +3,8 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseStamped, Point
 from ar_track_alvar_msgs.msg import AlvarCorners, AlvarMarkers
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
+
 from vision.msg import CardList
 from vision.srv import fuck
 
@@ -20,7 +22,7 @@ def get_markers(message):
     global markers
     markers = message.markers
     # Print the contents of the message to the console
-    print("Message: %s" % message)
+    #print("Message: %s" % message)
 def get_coords_cards(message):
     global coords, cards
     cards = message.cards
@@ -45,25 +47,39 @@ def pointcloud_projection(req):
     global cards
     if markers is None or coords is None or corners is None or cards is None:
         return None
-    changex3d = np.abs(markers[0].pose.pose.position.x - markers[1].pose.pose.position.x)
-    changey3d = np.abs(markers[0].pose.pose.position.y - markers[1].pose.pose.position.y)
+    # changex3d = np.abs(markers[0].pose.pose.position.x - markers[1].pose.pose.position.x)
+    # changey3d = np.abs(markers[0].pose.pose.position.y - markers[1].pose.pose.position.y)
+    orient = markers[0].pose.pose.orientation
+    orientation_list = [orient.x, orient.y, orient.z, orient.w]
+    (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
+    changex3d = (0.046 * np.cos(yaw))
+    changey3d = (0.046 * np.sin(yaw))
     changex2d = np.abs(corners[0].x - corners[1].x)
     changey2d = np.abs(corners[0].y - corners[1].y)
     z_coord = markers[0].pose.pose.position.z
-    y_scale = changey3d/changey2d
-    x_scale = changex3d/changex2d
+    y_scale = changex3d/changey2d # intentional swap bc image x/y is swapped with transform x/y
+    x_scale = changey3d/changex2d
+    #import pdb; pdb.set_trace()
+    print("SCALE:", x_scale, y_scale)
+    #print(y_scale)
     tf_cards = []
     tf_coords = []
-    for coord, card in zip(coords, cards):
-        diff_x = (coord.x - corners[1].x) * x_scale
-        diff_y = (coord.y - corners[1].y) * y_scale
-        x = markers[0].pose.pose.position.x + diff_x
-        y = markers[0].pose.pose.position.y + diff_y
-
+    avg_x = sum([c.x for c in corners]) / 4
+    avg_y = sum([c.y for c in corners]) / 4
+    distances = []
+    for i, (coord, card) in enumerate(zip(coords, cards)):
+        print("CARD:", coord.x, coord.y)
+        dist_from_center = (coord.x - 640) ** 2 + (coord.y - 400) ** 2
+        distances.append(dist_from_center)
+        diff_x = (coord.x - avg_x) * x_scale
+        diff_y = (coord.y - avg_y) * y_scale
+        x = markers[0].pose.pose.position.x + diff_y
+        y = markers[0].pose.pose.position.y - diff_x
         tf_coords.append(Point(x, y, z_coord))
         tf_cards.append(card)
 
-
+    #sorted_cards = [card for _, card in sorted(zip(distances,tf_cards), key=lambda pair: pair[0])]
+    #sorted_coords = [coord for _, coord in sorted(zip(distances,tf_coords), key=lambda pair: pair[0])]
     # coords_and_cards = zip(tf_coords, tf_cards)
     # arranged = sorted(coords_and_cards)
     # tuples = zip(*arranged)

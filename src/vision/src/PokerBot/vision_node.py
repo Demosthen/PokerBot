@@ -27,8 +27,9 @@ class VisionPublisher:
                     break
                 else:
                     card_dict[name][0] = 1
-                    card_dict[name][1] = (card_dict[name][0] + card[2][0]) / 2
-                    card_dict[name][2] = (card_dict[name][1] + card[2][1]) / 2
+                    card_dict[name][1] = (card_dict[name][1] + card[2][0]) / 2
+                    card_dict[name][2] = (card_dict[name][2] + card[2][1]) / 2
+                    # print("CARD %s" %name, card_dict[name])
             else:
                 card_dict[name] = [0] + list(card[2])
         msg = CardList()
@@ -54,6 +55,7 @@ class VisionPublisher:
 
         #Subscribe to the image topic
         rospy.Subscriber("/cameras/right_hand_camera/image", Image, self.imgReceived)
+        # rospy.Subscriber("/cameras/left_hand_camera/image", Image, self.imgReceived)
         
         #Create the publisher
         self.pub = rospy.Publisher('/pokerbot/card', CardList, queue_size=2)
