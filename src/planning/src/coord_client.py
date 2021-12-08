@@ -30,7 +30,8 @@ class Coord_Client():
         
         self.planner = PathPlanner("right_arm")
         self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
-        self.gripper = Gripper('right')
+        self.gripper = Gripper('left')
+        print(self.gripper.type())
         self.gripper.set_vacuum_threshold(400)
         
     
@@ -56,7 +57,7 @@ class Coord_Client():
         self.gripper.close(5.0)
         print("suyck", self.gripper.sucking())
         print("blow", self.gripper.blowing())
-        rospy.sleep(3)
+        rospy.sleep(1)
         print("suyck2", self.gripper.sucking())
         print("blow2", self.gripper.blowing())
         pass
@@ -66,7 +67,7 @@ class Coord_Client():
         self.gripper.open(5.0)
         print("suyck3", self.gripper.sucking())
         print("blow3", self.gripper.blowing())
-        rospy.sleep(3)
+        rospy.sleep(1)
         print("suyck4", self.gripper.sucking())
         print("blow4", self.gripper.blowing())
         pass

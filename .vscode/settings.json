@@ -1,3 +1,18 @@
 {
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "*.ipp": "cpp",
+        "*.tcc": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "system_error": "cpp",
+        "mixinvector": "cpp",
+        "polytope": "cpp",
+        "buffered_value": "cpp",
+        "fast_back_stack": "cpp",
+        "sstream": "cpp"
+    }
 }

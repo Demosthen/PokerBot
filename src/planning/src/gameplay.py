@@ -156,10 +156,6 @@ class Gameplay:
                 print("Baxter wins!")   
                 break
      
-    
-            
-
-
 
     def draw_card(self):
         # Variable for card spacing during placement
@@ -251,20 +247,9 @@ class Gameplay:
 
 
 def main():
-    # print('testing')
-    # point1 = Point(1, 1, 1)
-    # point2 = Point(2, 1, 1)
-    # point3 = Point(3, 1, 1)
-    # cards = [["4D","10H","2C"], [point1, point2, point3]]
-    # #Gameplay(cards)
-
-
-
     rospy.init_node('win_node')
     gameplay = Gameplay()
-    gameplay.client.pickup()
-    gameplay.client.release()
-    #gameplay.loop()
+    gameplay.loop()
     
 if __name__ == "__main__":
     main()

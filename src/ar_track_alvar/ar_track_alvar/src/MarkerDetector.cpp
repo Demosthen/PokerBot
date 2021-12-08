@@ -126,6 +126,8 @@ namespace alvar {
 
 		// When tracking we find the best matching blob and test if it is near enough?
 		if (track) {
+			ar_track_alvar_msgs::AlvarCorners msg;
+			int num_markers = 0;
 			for (size_t ii=0; ii<_track_markers_size(); ii++) {
 				Marker *mn = _track_markers_at(ii);
 				if (mn->GetError(Marker::DECODE_ERROR|Marker::MARGIN_ERROR) > 0) continue; // We track only perfectly decoded markers
@@ -148,25 +150,29 @@ namespace alvar {
                     mn->UpdateContent(blob_corners[track_i], gray, cam);    //Maybe should only do this when kinect is being used? Don't think it hurts anything...
 					mn->UpdatePose(blob_corners[track_i], cam, track_orientation, update_pose);
 
-					ar_track_alvar_msgs::AlvarCorners msg;
 					for (int i = 0; i < 4; i++) {
 						// printf("Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
 						// printf("Corner %i: y = %lf\n", i, blob_corners[track_i][i].y);
 						geometry_msgs::Point point;
 						point.x = blob_corners[track_i][i].x;
 						point.y = blob_corners[track_i][i].y;
-						msg.corners[i] = point;
+						if(num_markers == 0){
+							msg.corners[i] = point;
+						} else if(num_markers == 1) {
+							msg.corners2[i] = point;
+						}
 						// msg.data = blob_corners[track_i][i].x;
 						
    						// sprintf(str->data, "Corner %i: x = %lf\n", i, blob_corners[track_i][i].x);
 					}
-					pub.publish(msg);
 					// ROS_INFO("%d", blob_corners[track_i].size());
+					num_markers ++;
 					_markers_push_back(mn);
 					blob_corners[track_i].clear(); // We don't want to handle this again...
 					if (visualize) mn->Visualize(image, cam, CV_RGB(255,255,0));
 				}
 			}
+			pub.publish(msg);
 		}
 
 		// Now we go through the rest of the blobs -- in case there are new markers...

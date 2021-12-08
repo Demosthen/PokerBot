@@ -8,6 +8,8 @@ from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from vision.msg import CardList
 from vision.srv import fuck
 
+USE_TWO_TAGS = True
+
 #SUBSCRIBE TO THE TOPIC THAT POSTS EACH OF THE ALVARCORNERS (/ar_corners), ALVARMARKER (ar_pose_marker), CardList (/pokerbot/card)
 #Write a callback function to respond whenever we get something from each topic
 #Get the relative transformation between the two ar markers (how far apart are they in the x axis and y axis) in 3D and get the same transformation in 2D
@@ -16,6 +18,7 @@ from vision.srv import fuck
 markers = None
 coords = None
 corners = None
+corners2 = None
 cards = None
 
 def get_markers(message):
@@ -31,8 +34,9 @@ def get_coords_cards(message):
     # Print the contents of the message to the console
     #print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
 def get_corners(message):
-    global corners
+    global corners, corners2
     corners = message.corners
+    corners2 = message.corners2
 
     # Print the contents of the message to the console
     #print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
@@ -52,10 +56,20 @@ def pointcloud_projection(req):
     orient = markers[0].pose.pose.orientation
     orientation_list = [orient.x, orient.y, orient.z, orient.w]
     (roll, pitch, yaw) = euler_from_quaternion (orientation_list)
-    changex3d = (0.046 * np.cos(yaw))
-    changey3d = (0.046 * np.sin(yaw))
-    changex2d = np.abs(corners[0].x - corners[1].x)
-    changey2d = np.abs(corners[0].y - corners[1].y)
+    if USE_TWO_TAGS:
+        changex3d = markers[0].pose.pose.position.x - markers[1].pose.pose.position.x
+        changey3d = markers[0].pose.pose.position.y - markers[1].pose.pose.position.y
+        marker_pixx1 = sum([c.x for c in corners]) / 4
+        marker_pixx2 = sum([c.x for c in corners2]) / 4
+        marker_pixy1 = sum([c.y for c in corners]) / 4
+        marker_pixy2 = sum([c.y for c in corners2]) / 4
+        changex2d = np.abs(marker_pixx1 - marker_pixx2)
+        changey2d = np.abs(marker_pixy1 - marker_pixy2)
+    else:
+        changex3d = (0.046 * np.cos(yaw))
+        changey3d = (0.046 * np.sin(yaw))
+        changex2d = np.abs(corners[0].x - corners[1].x)
+        changey2d = np.abs(corners[0].y - corners[1].y)
     z_coord = markers[0].pose.pose.position.z
     y_scale = changex3d/changey2d # intentional swap bc image x/y is swapped with transform x/y
     x_scale = changey3d/changex2d
@@ -87,8 +101,42 @@ def pointcloud_projection(req):
     return CardList(tf_cards, tf_coords, len(tf_cards))
 
 
+def simple_projection(req):
+    global markers
+    global corners
+    global corners2
+    global coords
+    global cards
 
+    hand_index = None
+    hand_pixels = None
+    for i in range(len(markers)):
+        if markers[i].id == 7: # AR tag 7 indicates the hand
+            hand_index = i
+            if (i == 0):
+                hand_pixels = corners
+            elif (i == 1):
+                hand_pixels = corners2
+            else:
+                print("Why are we here?")
+            break
+    if hand_pixels is None:
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        return None
+    print(hand_pixels)
+    avg_y = sum([c.y for c in hand_pixels]) / 4
+    hand_len = 0
+    tf_coords = []
+    tf_cards = []
+    for _, (coord, card) in enumerate(zip(coords, cards)):
+        if abs(coord.y - avg_y) < 200:
+            tf_coords.append(Point(markers[hand_index].pose.pose.position.x, markers[hand_index].pose.pose.position.y + 0.1 + 0.1*hand_len, markers[hand_index].pose.pose.position.z))
+            tf_cards.append(card)
+            hand_len += 1
+        else:
+            print("ignoring center card:", card)
 
+    return CardList(tf_cards, tf_coords, len(tf_cards))
 
 # Define the method which contains the node's main functionality
 def listener():
