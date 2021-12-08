@@ -63,6 +63,7 @@ class Gameplay:
 
     def go_to_bev(self):
         self.client.move(self.bev, "bev")
+        raw_input("Press <Enter> to confirm BIRD\'S EYE VIEW ACTIVATED!!!!!")
 
     def move_card(self, card_list, coord_list, card, dest):
         assert len(card_list) == len(coord_list)
@@ -102,10 +103,25 @@ class Gameplay:
             hand_coords = coords[1:]
             print("cEnTeR CaRD", center_card)
             print("hAnDS CaRdS", hand_cards)
-            card_to_move = self.pick_card(hand_cards)
+            card_to_move = self.pick_card(hand_cards, center_card)
             self.move_card(cards, coords, card_to_move, self.make_pose(center_coord))
 
-    def pick_card(self, hand): #TODO
+    def pick_card(self, hand, center): #TODO
+        for card in hand:
+            num = card[:-1]
+            suit = card[-1]
+            center_num = center[:-1]
+            center_suit = center[-1]
+            if num == center_num or suit == center_suit:
+                return card
+                # # baxter has a card that it can play, switch gamestate to player turn
+                # self.pathplan(self.baxter_hand[1][c], "pick")
+                # self.pathplan(self.center_card, "place")
+                # self.free_spaces.append(self.baxter_hand[1][c])       
+                # self.baxter_hand[0].remove(c)
+                # self.baxter_hand[1].remove(c)                    
+                # self.turn = "player"
+                # break
         return hand[0]
 
 
@@ -235,14 +251,20 @@ class Gameplay:
 
 
 def main():
-    print('testing')
-    point1 = Point(1, 1, 1)
-    point2 = Point(2, 1, 1)
-    point3 = Point(3, 1, 1)
+    # print('testing')
+    # point1 = Point(1, 1, 1)
+    # point2 = Point(2, 1, 1)
+    # point3 = Point(3, 1, 1)
+    # cards = [["4D","10H","2C"], [point1, point2, point3]]
+    # #Gameplay(cards)
+
+
+
     rospy.init_node('win_node')
-    cards = [["4D","10H","2C"], [point1, point2, point3]]
-    #Gameplay(cards)
     gameplay = Gameplay()
-    gameplay.loop()
+    gameplay.client.pickup()
+    gameplay.client.release()
+    #gameplay.loop()
+    
 if __name__ == "__main__":
     main()

@@ -11,7 +11,7 @@ import numpy as np
 
 from path_planner import PathPlanner
 from controller import Controller
-from baxter_interface import Limb
+from baxter_interface import Limb, Gripper
 from moveit_msgs.msg import OrientationConstraint
 from geometry_msgs.msg import PoseStamped
 from vision.msg import CardList
@@ -30,12 +30,13 @@ class Coord_Client():
         
         self.planner = PathPlanner("right_arm")
         self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
+        self.gripper = Gripper('right')
+        self.gripper.set_vacuum_threshold(400)
         
     
 
     #client service proxy creation
     # Whenever the service returns a goal, it will return the nexted list
-
     def twodto3d(self):
         try:
             cards_list = self.twod_to_3d()
@@ -52,10 +53,22 @@ class Coord_Client():
 
     def pickup(self):
         print("picked up")
+        self.gripper.close(5.0)
+        print("suyck", self.gripper.sucking())
+        print("blow", self.gripper.blowing())
+        rospy.sleep(3)
+        print("suyck2", self.gripper.sucking())
+        print("blow2", self.gripper.blowing())
         pass
 
     def release(self):
         print('released')
+        self.gripper.open(5.0)
+        print("suyck3", self.gripper.sucking())
+        print("blow3", self.gripper.blowing())
+        rospy.sleep(3)
+        print("suyck4", self.gripper.sucking())
+        print("blow4", self.gripper.blowing())
         pass
 
     def find_cards(self):
