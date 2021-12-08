@@ -16,7 +16,7 @@ from moveit_msgs.msg import OrientationConstraint
 from geometry_msgs.msg import PoseStamped
 from vision.msg import CardList
 import time
-
+from copy import deepcopy
 import rospy
 import actionlib
 from moveit_msgs.msg import MoveGroupAction, MoveGroupGoal, MoveGroupFeedback, MoveGroupResult, JointConstraint, Constraints
@@ -46,9 +46,16 @@ class Coord_Client():
         return cards_list
 
     def move(self, pose, loc):
-        plan = self.planner.plan_to_pose(pose, [])
-        raw_input("Press <Enter> to move the arm to %s " % loc)
-        if not self.controller.execute_path(plan, timeout=300, log=False):
+        hover_pose = deepcopy(pose)
+        hover_pose.pose.position.z += 0.2
+        plan_hover = self.planner.plan_to_pose(hover_pose, [])
+        raw_input("Press <Enter> to move the arm to hover %s " % loc)
+        if not self.controller.execute_path(plan_hover, timeout=300, log=False):
+            raise Exception("Execution failed")
+    
+        plan_down = self.planner.plan_to_pose(pose, [])
+        raw_input("Press <Enter> to move the arm to final position %s " % loc)
+        if not self.controller.execute_path(plan_down, timeout=300, log=False):
             raise Exception("Execution failed")
         print("done")
 
