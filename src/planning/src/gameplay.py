@@ -163,7 +163,7 @@ class Gameplay:
 
     def draw_card(self):
         # Variable for card spacing during placement
-        target = Point(0, 0, 0) #TO BE CHANGED
+        target = Point(0, 0, 0) #TODO: CHANGE TO PLAYER DRAWS BAXTERS FIRST CARD
         space = 0.5
         
         if self.game_state == "start":
