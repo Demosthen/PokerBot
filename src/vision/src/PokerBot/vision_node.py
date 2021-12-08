@@ -54,7 +54,7 @@ class VisionPublisher:
         rospy.init_node('cam_listener')
 
         #Subscribe to the image topic
-        rospy.Subscriber("/cameras/right_hand_camera/image", Image, self.imgReceived)
+        rospy.Subscriber("/cameras/left_hand_camera/image", Image, self.imgReceived)
         # rospy.Subscriber("/cameras/left_hand_camera/image", Image, self.imgReceived)
         
         #Create the publisher

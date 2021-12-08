@@ -30,6 +30,7 @@ class Gameplay:
         self.setup_bev()
         rospy.wait_for_service('twod_to_3d')
         self.twod_to_3d = rospy.ServiceProxy('twod_to_3d', fuck)
+        self.identify_deck()
         print("IniT COMpLeTE GaMEn ReAdy EtO LLoOPpPoP")
         #self.go_to_bev()
         #print("the deck of cards is located at: " + self.deck_of_cards)
@@ -53,16 +54,16 @@ class Gameplay:
 
     def setup_bev(self):
         self.bev.header.frame_id = "base"
-        self.bev.pose.position.x = 0.736
-        self.bev.pose.position.y = -0.234
-        self.bev.pose.position.z = -0.035
+        self.bev.pose.position.x = 0.517
+        self.bev.pose.position.y = 0.042
+        self.bev.pose.position.z = 0.035
         self.bev.pose.orientation.x = 0
         self.bev.pose.orientation.y = -1
         self.bev.pose.orientation.z = 0
         self.bev.pose.orientation.w = 0
 
     def go_to_bev(self):
-        self.client.move(self.bev, "bev")
+        self.client.move(self.bev, "bev", hover=False)
         raw_input("Press <Enter> to confirm BIRD\'S EYE VIEW ACTIVATED!!!!!")
 
     def move_card(self, card_list, coord_list, card, dest):
@@ -87,6 +88,16 @@ class Gameplay:
         pose.pose.position.z = max(point.z, -0.135)
         pose.pose.orientation = self.bev.pose.orientation
         return pose
+
+    def identify_deck(self):
+        self.go_to_bev()
+        deck_spotting = self.twod_to_3d()
+        print("deck location: ", deck_spotting)
+        self.deck_of_cards = deck_spotting.cards.coords[0]
+        self.client.move(self.make_pose(self.deck_of_cards), "card")
+        self.client.pickup()
+        self.go_to_bev()
+        self.client.release()
 
     def loop(self):
         while not rospy.is_shutdown():

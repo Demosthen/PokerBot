@@ -4,8 +4,8 @@
   <include file="$(find lab4_cam)/launch/ar_track.launch"/>
   <node name="twod_to_3d" pkg="vision" type="2d_to_3d.py"/>
 
-   <!-- Launch moveit -->
+  <!-- Launch moveit -->
+  <node name="action_client" pkg="baxter_interface" type="joint_trajectory_action_server.py"/>
   <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch">
-    <arg name="left_electric_gripper" value="true"/>
   </include>
 </launch>

@@ -28,8 +28,8 @@ class Coord_Client():
         self.Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
         self.Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
         
-        self.planner = PathPlanner("right_arm")
-        self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('right'))
+        self.planner = PathPlanner("left_arm")
+        self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('left'))
         self.gripper = Gripper('left')
         print(self.gripper.type())
         self.gripper.set_vacuum_threshold(400)
@@ -45,13 +45,14 @@ class Coord_Client():
             print("Service did not process request: " + str(exc))
         return cards_list
 
-    def move(self, pose, loc):
-        hover_pose = deepcopy(pose)
-        hover_pose.pose.position.z += 0.2
-        plan_hover = self.planner.plan_to_pose(hover_pose, [])
-        raw_input("Press <Enter> to move the arm to hover %s " % loc)
-        if not self.controller.execute_path(plan_hover, timeout=300, log=False):
-            raise Exception("Execution failed")
+    def move(self, pose, loc, hover=True):
+        if hover:
+            hover_pose = deepcopy(pose)
+            hover_pose.pose.position.z += 0.2
+            plan_hover = self.planner.plan_to_pose(hover_pose, [])
+            raw_input("Press <Enter> to move the arm to hover %s " % loc)
+            if not self.controller.execute_path(plan_hover, timeout=300, log=False):
+                raise Exception("Execution failed")
     
         plan_down = self.planner.plan_to_pose(pose, [])
         raw_input("Press <Enter> to move the arm to final position %s " % loc)
@@ -60,24 +61,10 @@ class Coord_Client():
         print("done")
 
     def pickup(self):
-        print("picked up")
-        self.gripper.close(5.0)
-        print("suyck", self.gripper.sucking())
-        print("blow", self.gripper.blowing())
-        rospy.sleep(1)
-        print("suyck2", self.gripper.sucking())
-        print("blow2", self.gripper.blowing())
-        pass
+        self.gripper.close()
 
     def release(self):
-        print('released')
-        self.gripper.open(5.0)
-        print("suyck3", self.gripper.sucking())
-        print("blow3", self.gripper.blowing())
-        rospy.sleep(1)
-        print("suyck4", self.gripper.sucking())
-        print("blow4", self.gripper.blowing())
-        pass
+        self.gripper.open()
 
     def find_cards(self):
         #Initiates the gameplay class with the list of points as input
