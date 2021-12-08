@@ -63,8 +63,10 @@ class Coord_Client():
     def pickup(self):
         self.gripper.close()
 
+    # Releases the vacuum gripper holding the card
     def release(self):
         self.gripper.open()
+
 
     def find_cards(self):
         #Initiates the gameplay class with the list of points as input

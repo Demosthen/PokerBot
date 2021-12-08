@@ -61,6 +61,7 @@ class PathPlanner(object):
 
         # Set the bounds of the workspace
         self._group.set_workspace([-2, -2, -2, 2, 2, 2])
+        self._group.set_max_velocity_scaling_factor(0.1)
 
         # Sleep for a bit to ensure that all inititialization has finished
         rospy.sleep(0.5)

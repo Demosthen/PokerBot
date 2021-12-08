@@ -26,20 +26,22 @@ class Gameplay:
         self.client = Coord_Client()
         self.current_cards = None #self.client.twodto3d()
         self.deck_of_cards = None #self.current_cards[1][0]
+        self.game_state = "start"   
+        self.baxter_hand = []
+        self.free_spaces = []
         self.bev = PoseStamped()
         self.setup_bev()
+      
         rospy.wait_for_service('twod_to_3d')
         self.twod_to_3d = rospy.ServiceProxy('twod_to_3d', fuck)
         self.identify_deck()
         print("IniT COMpLeTE GaMEn ReAdy EtO LLoOPpPoP")
-        #self.go_to_bev()
+        # self.go_to_bev()
         #print("the deck of cards is located at: " + self.deck_of_cards)
 
         # User Confirmation request
         # raw_input("Press <Enter> to start the game! ")
-        # self.game_state = "start"   
-        # self.baxter_hand = []
-        # self.free_spaces = []
+        
         # # Baxter draws 4 cards for itself
         # self.draw_card()
         # print("Baxter's hand includes: " + self.baxter_hand)
@@ -54,7 +56,7 @@ class Gameplay:
 
     def setup_bev(self):
         self.bev.header.frame_id = "base"
-        self.bev.pose.position.x = 0.517
+        self.bev.pose.position.x = 0.617
         self.bev.pose.position.y = 0.042
         self.bev.pose.position.z = 0.035
         self.bev.pose.orientation.x = 0
@@ -76,9 +78,9 @@ class Gameplay:
         assert coords != None
         card_pose = self.make_pose(coords)
         self.client.move(card_pose, "cArD")
-        self.client.pickup() # TODO:
+        self.client.pickup() 
         self.client.move(dest, "cEntErRrr")
-        self.client.release() # TODO:
+        self.client.release() 
 
     def make_pose(self, point):
         pose = PoseStamped()
@@ -94,12 +96,15 @@ class Gameplay:
         deck_spotting = self.twod_to_3d()
         print("deck location: ", deck_spotting)
         self.deck_of_cards = deck_spotting.cards.coords[0]
-        self.client.move(self.make_pose(self.deck_of_cards), "card")
-        self.client.pickup()
-        self.go_to_bev()
-        self.client.release()
+        self.draw_card(4)
+        # self.client.move(self.make_pose(self.deck_of_cards), "card")
+        # self.client.pickup()
+        # self.go_to_bev()
+        # # self.client.release()
 
     def loop(self):
+        # if self.game_state == "start":
+        #     self.draw_card(4)
         while not rospy.is_shutdown():
             self.go_to_bev()
             rospy.sleep(2) # wait for images to go to 2d 2 3d
@@ -124,82 +129,88 @@ class Gameplay:
             center_num = center[:-1]
             center_suit = center[-1]
             if num == center_num or suit == center_suit:
-                return card
+                
                 # # baxter has a card that it can play, switch gamestate to player turn
                 # self.pathplan(self.baxter_hand[1][c], "pick")
                 # self.pathplan(self.center_card, "place")
-                # self.free_spaces.append(self.baxter_hand[1][c])       
+                self.free_spaces.append(self.baxter_hand[1][c])       
                 # self.baxter_hand[0].remove(c)
                 # self.baxter_hand[1].remove(c)                    
-                # self.turn = "player"
+                self.turn = "player"
                 # break
+                return card
+        if self.game_state == "baxter":
+            self.draw_card(1)
         return hand[0]
 
 
         
 
-    # Compares the most recently played card to its own, and 
-    def compare_cards(self):
-        while not rospy.is_shutdown():
+    # # Compares the most recently played card to its own, and 
+    # def compare_cards(self):
+    #     while not rospy.is_shutdown():
             
-            for c in len(self.baxter_hand[0]):
-                # Card[0] contains the card type, Card[1] accesses the coords
-                # if either the card number or the suite is the same
-                card = self.baxter_hand[0][c]
+    #         for c in len(self.baxter_hand[0]):
+    #             # Card[0] contains the card type, Card[1] accesses the coords
+    #             # if either the card number or the suite is the same
+    #             card = self.baxter_hand[0][c]
 
-                if card[-1] == self.center_card[-1] or card[0] == self.center_card[0] or card[1] == self.center_card[1]:
-                    # baxter has a card that it can play, switch gamestate to player turn
-                    self.pathplan(self.baxter_hand[1][c], "pick")
-                    self.pathplan(self.center_card, "place")
-                    self.free_spaces.append(self.baxter_hand[1][c])       
-                    self.baxter_hand[0].remove(c)
-                    self.baxter_hand[1].remove(c)                    
-                    self.turn = "player"
-                    break
-            if self.turn == "baxter":
-                #draw a new card from the deck
-                self.draw_card()
+    #             if card[-1] == self.center_card[-1] or card[0] == self.center_card[0] or card[1] == self.center_card[1]:
+    #                 # baxter has a card that it can play, switch gamestate to player turn
+    #                 self.pathplan(self.baxter_hand[1][c], "pick")
+    #                 self.pathplan(self.center_card, "place")
+    #                 self.free_spaces.append(self.baxter_hand[1][c])       
+    #                 self.baxter_hand[0].remove(c)
+    #                 self.baxter_hand[1].remove(c)                    
+    #                 self.turn = "player"
+    #                 break
+    #         if self.turn == "baxter":
+    #             #draw a new card from the deck
+    #             self.draw_card()
 
-            raw_input("Press <Enter> to once player has played! ")
-            self.turn = "baxter"
+    #         raw_input("Press <Enter> to once player has played! ")
+    #         self.turn = "baxter"
 
-            if len(self.baxter_hand) == 0:
-                print("Baxter wins!")   
-                break
+    #         if len(self.baxter_hand) == 0:
+    #             print("Baxter wins!")   
+    #             break
      
 
-    def draw_card(self):
+    def draw_card(self, num):
         # Variable for card spacing during placement
-        target = Point(0, 0, 0) #TODO: CHANGE TO PLAYER DRAWS BAXTERS FIRST CARD
+        print("I AM DRAW CARD FUNCTION, AND I AM RUNNING")
         space = 0.5
         
         if self.game_state == "start":
-            # Draw 4 cards and play 1 card
-            while len(self.baxter_hand[0]) != 4:
-                #goes to the deck and picks up card
-                self.pathplan(self.deck_of_cards, "pick")
-        
-                #places card in own hand & look at it
-                moved_card = self.pathplan(target, "place")
-                self.baxter_hand[0].append(moved_card[0])
-                self.baxter_hand[1].append(moved_card[1])
-                #apply offset for next start
-                target[0].x += space
-
+            target = Point(0, 0, 0.1) #TODO: CHANGE TO PLAYER DRAWS BAXTERS FIRST CARD
         else:
-            # Draw a card from deck and place in empty space or add to end of the hand
-            self.pathplan(self.deck_of_cards, "pick")
-            
-            # If there is free space in its hand, place there
             if self.free_spaces != []:
+                # Draw a card from deck and place in empty space or add to end of the hand
                 target = self.free_spaces[0]
             else:
+                # Add new card to the end of its hand
                 target = self.baxter_hand[1][3]
                 target.x = target.x + space
-            #places card in own hand & look at it
-            self.pathplan(target, "place")
-            return 0
 
+        # Draw 4 cards and play 1 card
+        while len(self.baxter_hand) != num:
+            #goes to the deck and picks up card
+            self.client.move(self.make_pose(self.deck_of_cards), "card")
+            self.client.pickup()
+            self.go_to_bev()
+
+            #places card in own hand & look at it
+            self.client.move(self.make_pose(target), "card")
+            
+            # self.baxter_hand[1].append(moved_card[1])
+            self.client.release()
+            new_card = self.client.twodto3d()
+
+       
+
+            self.baxter_hand.append(new_card)
+            #apply offset for next start
+            target[0].x += space
             
 
     
