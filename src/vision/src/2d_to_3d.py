@@ -160,11 +160,11 @@ def intrinsic_projection(req):
     tf_cards = []
     for i, (coord, card) in enumerate(zip(coords, cards)):
         print("CARD:", coord.x, coord.y)
-        homog_coord = np.array([coord.x, coord.y, z_coord])
+        homog_coord = np.array([coord.x, coord.y, 1]) # if fails, flip x and y and negate the homogeneous y coordinate
         three_d = np.matmul(inv_K, homog_coord)
         three_d *= z_coord / three_d[2]
         three_d = np.matmul(inv_transform, three_d)
-        dist_from_center = (coord.x - 640) ** 2 + (coord.y - 400) ** 2
+        dist_from_center = (coord.x - 400) ** 2 + (coord.y - 640) ** 2
         distances.append(dist_from_center)
         x, y, z = three_d[0], three_d[1], three_d[2]
         tf_coords.append(Point(x, y, z))
