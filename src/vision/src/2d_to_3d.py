@@ -22,8 +22,8 @@ corners2 = None
 cards = None
 K = None
 inv_K = None
-tf_listener = tf.TransformListener()
-transformer = tf.listener.TransformerROS()
+tf_listener = None
+transformer = None
 def get_markers(message):
     global markers
     markers = message.markers
@@ -148,9 +148,9 @@ def intrinsic_projection(req):
         return None
    
     #Wait for transform to get published by rviz
-    tf_listener.WaitForTransform('/robot/whatever/left_hand_camera', '/base', 10)
+    tf_listener.waitForTransform('/left_hand_camera', '/base', rospy.Time(), rospy.Duration(10))
     
-    (trans, rot) = tf_listener.lookupTransform('/robot/whatever/left_hand_camera', '/base', rospy.Time(0))
+    (trans, rot) = tf_listener.lookupTransform('/left_hand_camera', '/base', rospy.Time(0))
     transform = transformer.fromTranslationRotation(trans, rot) # base to camera
     inv_transform = np.linalg.inv(transform) # camera to base
     tf_marker_coords = [np.matmul(transform, np.array([m.pose.pose.position.x, m.pose.pose.position.y, m.pose.pose.position.z, 1])) for m in markers]
@@ -163,13 +163,14 @@ def intrinsic_projection(req):
         homog_coord = np.array([coord.x, coord.y, 1]) # if fails, flip x and y and negate the homogeneous y coordinate
         three_d = np.matmul(inv_K, homog_coord)
         three_d *= z_coord / three_d[2]
-        three_d = np.matmul(inv_transform, three_d)
+        h_three_d = np.array([three_d[0], three_d[1], three_d[2], 1])
+        three_d = np.matmul(inv_transform, h_three_d)
         dist_from_center = (coord.x - 400) ** 2 + (coord.y - 640) ** 2
         distances.append(dist_from_center)
         x, y, z = three_d[0], three_d[1], three_d[2]
         tf_coords.append(Point(x, y, z))
         tf_cards.append(card)
-    
+    return CardList(tf_cards, tf_coords, len(tf_cards))
 
 
 def simple_projection(req):
@@ -226,7 +227,7 @@ def listener():
     rospy.Subscriber('/ar_corners', AlvarCorners, get_corners)
     rospy.Service('twod_to_3d', fuck, intrinsic_projection if USE_INTRINSIC else pointcloud_projection)
     if USE_INTRINSIC:
-        rospy.Subscriber("/cameras/left_hand_camera/cam_info", CameraInfo, get_cam_info)
+        rospy.Subscriber("/cameras/left_hand_camera/camera_info", CameraInfo, get_cam_info)
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
     rospy.spin()
@@ -240,5 +241,6 @@ if __name__ == '__main__':
     # randomly generated name means we can start multiple copies of this node
     # without having multiple nodes with the same name, which ROS doesn't allow.
     rospy.init_node('service_node3d', anonymous=True)
-
+    tf_listener = tf.TransformListener()
+    transformer = tf.listener.TransformerROS()
     listener()
