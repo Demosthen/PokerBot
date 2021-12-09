@@ -16,7 +16,7 @@ class VisionPublisher:
         #Save the image in the instance variable
         # self.lastImage = img
         im = self.bridge.imgmsg_to_cv2(img)
-        r = self.net.detect(im, 0.5, nms=0.6)[1]
+        r = self.net.detect(im, 0.3, nms=0.6)[1]
         r.reverse()
         #Print an alert to the console
         card_dict = OrderedDict()
@@ -32,6 +32,7 @@ class VisionPublisher:
                     # print("CARD %s" %name, card_dict[name])
             else:
                 card_dict[name] = [0] + list(card[2])
+                print(card_dict[name])
         msg = CardList()
         msg.count = len(card_dict)
         msg.cards = card_dict.keys()
@@ -54,8 +55,8 @@ class VisionPublisher:
         rospy.init_node('cam_listener')
 
         #Subscribe to the image topic
+        #rospy.Subscriber("/cameras/right_hand_camera/image", Image, self.imgReceived)
         rospy.Subscriber("/cameras/left_hand_camera/image", Image, self.imgReceived)
-        # rospy.Subscriber("/cameras/left_hand_camera/image", Image, self.imgReceived)
         
         #Create the publisher
         self.pub = rospy.Publisher('/pokerbot/card', CardList, queue_size=2)

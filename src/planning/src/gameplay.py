@@ -24,40 +24,49 @@ class Gameplay:
         """
         #Initiates coord_client and looks for card deck
         self.client = Coord_Client()
+        rospy.sleep(2)
+        self.client.release()
         self.current_cards = None #self.client.twodto3d()
         self.deck_of_cards = None #self.current_cards[1][0]
         self.game_state = "start"   
-        self.baxter_hand = []
+        self.baxter_hand =[[None], [None]]
         self.free_spaces = []
+        
         self.bev = PoseStamped()
         self.setup_bev()
+        self.client.pickup()
       
         rospy.wait_for_service('twod_to_3d')
-        self.twod_to_3d = rospy.ServiceProxy('twod_to_3d', fuck)
+        twod_to_3d = rospy.ServiceProxy('twod_to_3d', fuck)
+        def wrapper():
+            while(True):
+                try:
+                    ret = twod_to_3d()
+                    satisfactory = raw_input("IS %s SATISFACTORY? PRESS a and enter to confirm \n" % ret)
+                    if len(ret.cards.cards) != 0 and satisfactory == 'a':
+                        return ret
+                    if not satisfactory:
+                        raw_input("Couldn't detect any cards, press Enter to try again")
+                except rospy.service.ServiceException:
+                    i = raw_input("Couldn't detect AR markers, press Enter to try again")
+                    if i:
+                        break
+                
+        self.twod_to_3d = wrapper
+        self.client.release()
         self.identify_deck()
         print("IniT COMpLeTE GaMEn ReAdy EtO LLoOPpPoP")
-        # self.go_to_bev()
-        #print("the deck of cards is located at: " + self.deck_of_cards)
-
-        # User Confirmation request
-        # raw_input("Press <Enter> to start the game! ")
-        
-        # # Baxter draws 4 cards for itself
-        # self.draw_card()
-        # print("Baxter's hand includes: " + self.baxter_hand)
-        
-        # # Player plays first, baxter retarget[0] = target[0] + spaceads in
-        # #FIX THIS, BAXTER NEEDS TO BE CENTERED AND ONLY READ CENTER CARD
-        # self.current_cards =  self.client.twodto3d()
-        # self.center_card = self.current_cards[0][0]
-        # print("the center card is: " + self.center_card)
-        # self.game_state = "baxter"
-        # self.compare_cards()
 
     def setup_bev(self):
+        
         self.bev.header.frame_id = "base"
+        # RIGHT HAND BEV
+        # self.bev.pose.position.x = 0.738
+        # self.bev.pose.position.y = 0.289
+        # self.bev.pose.position.z = 0.035
+        # LEFT HAND BEV
         self.bev.pose.position.x = 0.617
-        self.bev.pose.position.y = 0.042
+        self.bev.pose.position.y = 0.042 
         self.bev.pose.position.z = 0.035
         self.bev.pose.orientation.x = 0
         self.bev.pose.orientation.y = -1
@@ -87,7 +96,7 @@ class Gameplay:
         pose.header.frame_id = "base"
         pose.pose.position.x = point.x
         pose.pose.position.y = point.y
-        pose.pose.position.z = max(point.z, -0.135)
+        pose.pose.position.z = max(point.z, -0.14)
         pose.pose.orientation = self.bev.pose.orientation
         return pose
 
@@ -95,8 +104,10 @@ class Gameplay:
         self.go_to_bev()
         deck_spotting = self.twod_to_3d()
         print("deck location: ", deck_spotting)
+
         self.deck_of_cards = deck_spotting.cards.coords[0]
-        self.draw_card(4)
+        print("deck location updated as: ", self.deck_of_cards)
+        self.draw_card(4, initial_bev=False)
         # self.client.move(self.make_pose(self.deck_of_cards), "card")
         # self.client.pickup()
         # self.go_to_bev()
@@ -119,11 +130,11 @@ class Gameplay:
             hand_coords = coords[1:]
             print("cEnTeR CaRD", center_card)
             print("hAnDS CaRdS", hand_cards)
-            card_to_move = self.pick_card(hand_cards, center_card)
+            card_to_move = self.pick_card(hand_cards, hand_coords, center_card)
             self.move_card(cards, coords, card_to_move, self.make_pose(center_coord))
 
-    def pick_card(self, hand, center): #TODO
-        for card in hand:
+    def pick_card(self, hand, coords, center): #TODO
+        for card, coord in zip(hand, coords):
             num = card[:-1]
             suit = card[-1]
             center_num = center[:-1]
@@ -133,7 +144,7 @@ class Gameplay:
                 # # baxter has a card that it can play, switch gamestate to player turn
                 # self.pathplan(self.baxter_hand[1][c], "pick")
                 # self.pathplan(self.center_card, "place")
-                self.free_spaces.append(self.baxter_hand[1][c])       
+                self.free_spaces.append(coord)       
                 # self.baxter_hand[0].remove(c)
                 # self.baxter_hand[1].remove(c)                    
                 self.turn = "player"
@@ -175,14 +186,16 @@ class Gameplay:
     #             print("Baxter wins!")   
     #             break
      
+    def compute_point_dist(self, a, b):
+        return (a.x - b.x) **2 + (a.y - b.y) **2
 
-    def draw_card(self, num):
+    def draw_card(self, num, initial_bev=True):
         # Variable for card spacing during placement
         print("I AM DRAW CARD FUNCTION, AND I AM RUNNING")
-        space = 0.5
+        space = -0.08
         
         if self.game_state == "start":
-            target = Point(0, 0, 0.1) #TODO: CHANGE TO PLAYER DRAWS BAXTERS FIRST CARD
+            target = Point(0.549, 0.181, -0.135) #TODO: CHANGE TO PLAYER DRAWS BAXTERS FIRST CARD
         else:
             if self.free_spaces != []:
                 # Draw a card from deck and place in empty space or add to end of the hand
@@ -194,6 +207,18 @@ class Gameplay:
 
         # Draw 4 cards and play 1 card
         while len(self.baxter_hand) != num:
+            if initial_bev:
+                self.go_to_bev()
+            fuckResponse = self.twod_to_3d()
+            
+            deck_card = fuckResponse.cards.cards[0]
+            min_dist = self.compute_point_dist(fuckResponse.cards.coords[0], self.deck_of_cards)
+            for c, coord in zip(fuckResponse.cards.cards, fuckResponse.cards.coords):
+                dist = self.compute_point_dist(self.deck_of_cards, coord)
+                if dist < min_dist:
+                    min_dist = dist
+                    deck_card = c
+            print("PICKING UP CARD: ", deck_card)
             #goes to the deck and picks up card
             self.client.move(self.make_pose(self.deck_of_cards), "card")
             self.client.pickup()
@@ -204,74 +229,76 @@ class Gameplay:
             
             # self.baxter_hand[1].append(moved_card[1])
             self.client.release()
-            new_card = self.client.twodto3d()
-
-       
-
-            self.baxter_hand.append(new_card)
+            self.baxter_hand[0].append(deck_card)
+            self.baxter_hand[1].append(target)
+            print("check check DID YOU ADD A CARD TO YOUR HAND", self.baxter_hand)
+            # new_card = self.twodto3d()
             #apply offset for next start
-            target[0].x += space
+            
+            target.y += space
+            print("target is n NOW THIS INSTEAD : ", target)
+            initial_bev = True
             
 
     
-    # PATH PLAN AND EXECUTE
-    def pathplan(self, target, vac):
-        # go to the location designated
-        try:
-            card_loc = PoseStamped()
-            card_loc.header.frame_id = "base"
+    # # PATH PLAN AND EXECUTE
+    # def pathplan(self, target, vac):
+    #     # go to the location designated
+    #     try:
+    #         card_loc = PoseStamped()
+    #         card_loc.header.frame_id = "base"
 
-            #x, y, and z position
-            card_loc.pose.position.x = target.x 
-            card_loc.pose.position.y = target.y 
-            card_loc.pose.position.z = target.z + 0.5
+    #         #x, y, and z position
+    #         card_loc.pose.position.x = target.x 
+    #         card_loc.pose.position.y = target.y 
+    #         card_loc.pose.position.z = target.z + 0.5
 
-            #Orientation as a quaternion
-            card_loc.pose.orientation.x = 0.0
-            card_loc.pose.orientation.y = -1.0
-            card_loc.pose.orientation.z = 0.0
-            card_loc.pose.orientation.w = 0.0
+    #         #Orientation as a quaternion
+    #         card_loc.pose.orientation.x = 0.0
+    #         card_loc.pose.orientation.y = -1.0
+    #         card_loc.pose.orientation.z = 0.0
+    #         card_loc.pose.orientation.w = 0.0
 
-            # run the pose stamped object through planner
-            plan = self.planner.plan_to_pose(card_loc, [])
+    #         # run the pose stamped object through planner
+    #         plan = self.planner.plan_to_pose(card_loc, [])
 
-            raw_input("Press <Enter> to execute arm movement")
-            if not planner.execute_plan(plan):
-                raise Exception("Execution failed")
-            if not controller.execute_path(plan):
-                raise Exception("Execution failed")
+    #         raw_input("Press <Enter> to execute arm movement")
+    #         if not planner.execute_plan(plan):
+    #             raise Exception("Execution failed")
+    #         if not controller.execute_path(plan):
+    #             raise Exception("Execution failed")
             
-            if vac == "place":
-                # The gripper is placing down a card
-                # tell vacuum cripper to let go
-                card_loc.pose.position.z = target.z + 1
-                plan = self.planner.plan_to_pose(card_loc, [])
-                raw_input("Press <Enter> to lift up and look at card")
+    #         if vac == "place":
+    #             # The gripper is placing down a card
+    #             # tell vacuum cripper to let go
+    #             card_loc.pose.position.z = target.z + 1
+    #             plan = self.planner.plan_to_pose(card_loc, [])
+    #             raw_input("Press <Enter> to lift up and look at card")
 
-                # Baxter reads in the card it just put down
-                moved_card = self.client.twodto3d()
-                return moved_card
+    #             # Baxter reads in the card it just put down
+    #             moved_card = self.client.twodto3d()
+    #             return moved_card
                 
-            else:
-                # the gripper is picking up a card
-                # tell vac to suck in
-                return []
+    #         else:
+    #             # the gripper is picking up a card
+    #             # tell vac to suck in
+    #             return []
 
 
 
-        except Exception as e:
-            print(e)
-            traceback.print_exc()
+    #     except Exception as e:
+    #         print(e)
+    #         traceback.print_exc()
 
-            # Print the contents of the message to the console
-            # print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
+    #         # Print the contents of the message to the console
+    #         # print("Message: %s" % message.msg + ", Sent at: %s" % message.timestamp  + ", Received at: %s" % rospy.get_time()  )
 
 
 
 def main():
     rospy.init_node('win_node')
     gameplay = Gameplay()
-    gameplay.loop()
+    #gameplay.loop()
     
 if __name__ == "__main__":
     main()

@@ -4,6 +4,7 @@
 # use "chmod +x [filename]" to make this script executable.
 
 # Import the dependencies as described in example_pub.py
+from numpy.core.shape_base import block
 import rospy
 import roslib; roslib.load_manifest('planning')
 import sys
@@ -27,12 +28,13 @@ class Coord_Client():
         self.Kd = 0.015 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
         self.Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
         self.Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-        
-        self.planner = PathPlanner("left_arm")
-        self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb('left'))
-        self.gripper = Gripper('left')
+        arm = 'left' # right or left
+        self.planner = PathPlanner("%s_arm" % arm)
+        self.controller = Controller(self.Kp, self.Ki, self.Kd, self.Kw, Limb(arm))
+        self.gripper = Gripper(arm)
         print(self.gripper.type())
         self.gripper.set_vacuum_threshold(400)
+        # self.gripper.set_holding_force(100)
         
     
 
@@ -50,18 +52,27 @@ class Coord_Client():
             hover_pose = deepcopy(pose)
             hover_pose.pose.position.z += 0.2
             plan_hover = self.planner.plan_to_pose(hover_pose, [])
-            raw_input("Press <Enter> to move the arm to hover %s " % loc)
-            if not self.controller.execute_path(plan_hover, timeout=300, log=False):
+            #raw_input("Press <Enter> to move the arm to hover %s " % loc)
+            if not self.controller.execute_path(plan_hover, timeout=15, log=False):
                 raise Exception("Execution failed")
-    
-        plan_down = self.planner.plan_to_pose(pose, [])
+        
+        orien_const = OrientationConstraint()
+        orien_const.link_name = "left_gripper"
+        orien_const.header.frame_id = "base"
+        orien_const.orientation.y = -1.0
+        orien_const.absolute_x_axis_tolerance = 0.1
+        orien_const.absolute_y_axis_tolerance = 0.1
+        orien_const.absolute_z_axis_tolerance = 0.1
+        orien_const.weight = 1.0
+        plan_down = self.planner.plan_to_pose(pose, [orien_const])
         raw_input("Press <Enter> to move the arm to final position %s " % loc)
-        if not self.controller.execute_path(plan_down, timeout=300, log=False):
+        if not self.controller.execute_path(plan_down, timeout=15, log=False):
             raise Exception("Execution failed")
+        rospy.sleep(1)
         print("done")
 
     def pickup(self):
-        self.gripper.close()
+        self.gripper.close(timeout=30)
 
     # Releases the vacuum gripper holding the card
     def release(self):
