@@ -4,12 +4,12 @@ import numpy as np
 from geometry_msgs.msg import PoseStamped, Point
 from ar_track_alvar_msgs.msg import AlvarCorners, AlvarMarkers
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-
+from sensor_msgs.msg import Image
 from vision.msg import CardList
 from vision.srv import fuck
-
+import tf
 USE_TWO_TAGS = True
-
+USE_INTRINSIC = False
 #SUBSCRIBE TO THE TOPIC THAT POSTS EACH OF THE ALVARCORNERS (/ar_corners), ALVARMARKER (ar_pose_marker), CardList (/pokerbot/card)
 #Write a callback function to respond whenever we get something from each topic
 #Get the relative transformation between the two ar markers (how far apart are they in the x axis and y axis) in 3D and get the same transformation in 2D
@@ -20,7 +20,10 @@ coords = None
 corners = None
 corners2 = None
 cards = None
-
+K = None
+inv_K = None
+tf_listener = tf.TransformListener()
+transformer = tf.listener.TransformerROS()
 def get_markers(message):
     global markers
     markers = message.markers
@@ -101,6 +104,74 @@ def pointcloud_projection(req):
     return CardList(tf_cards, tf_coords, len(tf_cards))
 
 
+def skew_3d(omega):
+    """
+    Converts a rotation vector in 3D to its corresponding skew-symmetric matrix.
+    
+    Args:
+    omega - (3,) ndarray: the rotation vector
+    
+    Returns:
+    omega_hat - (3,3) ndarray: the corresponding skew symmetric matrix
+    """
+
+    # YOUR CODE HERE
+    return np.array([[0, -omega[2], omega[1]],
+                        [omega[2], 0, -omega[0]],
+                        [-omega[1], omega[0], 0]])
+
+def hat_3d(xi):
+    """
+    Converts a 3D twist to its corresponding 4x4 matrix representation
+    
+    Args:
+    xi - (6,) ndarray: the 3D twist
+    
+    Returns:
+    xi_hat - (4,4) ndarray: the corresponding 4x4 matrix
+    """
+
+    # YOUR CODE HERE
+    xi_hat = np.zeros((4,4))
+    xi_hat[:3, :3] = skew_3d(xi[3:])
+    xi_hat[:3, -1] = xi[:3]
+    return xi_hat
+
+def intrinsic_projection(req):
+    global markers
+    global coords
+    global corners
+    global cards
+    if markers is None or coords is None or corners is None or cards is None or K is None:
+        return None
+    if USE_TWO_TAGS and len(markers) != 2:
+        return None
+   
+    #Wait for transform to get published by rviz
+    tf_listener.WaitForTransform('/robot/whatever/left_hand_camera', '/base', 10)
+    
+    (trans, rot) = tf_listener.lookupTransform('/robot/whatever/left_hand_camera', '/base', rospy.Time(0))
+    transform = transformer.fromTranslationRotation(trans, rot) # base to camera
+    inv_transform = np.linalg.inv(transform) # camera to base
+    tf_marker_coords = [np.matmul(transform, np.array([m.pose.pose.position.x, m.pose.pose.position.y, m.pose.pose.position.z, 1])) for m in markers]
+    z_coord = sum([c[2] for c in tf_marker_coords]) / len(tf_marker_coords)
+    distances = []
+    tf_coords = []
+    tf_cards = []
+    for i, (coord, card) in enumerate(zip(coords, cards)):
+        print("CARD:", coord.x, coord.y)
+        homog_coord = np.array([coord.x, coord.y, z_coord])
+        three_d = np.matmul(inv_K, homog_coord)
+        three_d *= z_coord / three_d[2]
+        three_d = np.matmul(inv_transform, three_d)
+        dist_from_center = (coord.x - 640) ** 2 + (coord.y - 400) ** 2
+        distances.append(dist_from_center)
+        x, y, z = three_d[0], three_d[1], three_d[2]
+        tf_coords.append(Point(x, y, z))
+        tf_cards.append(card)
+    
+
+
 def simple_projection(req):
     global markers
     global corners
@@ -138,6 +209,11 @@ def simple_projection(req):
 
     return CardList(tf_cards, tf_coords, len(tf_cards))
 
+def get_cam_info(req):
+    global K, inv_K
+    K = np.reshape(req.K, (3, 3))
+    inv_K = np.linalg.inv(K)
+
 # Define the method which contains the node's main functionality
 def listener():
 
@@ -149,6 +225,9 @@ def listener():
     rospy.Subscriber('/pokerbot/card', CardList, get_coords_cards)
     rospy.Subscriber('/ar_corners', AlvarCorners, get_corners)
     rospy.Service('twod_to_3d', fuck, pointcloud_projection)
+    if USE_INTRINSIC:
+        caminfo_sub = rospy.Subscriber(cam_info_topic, CameraInfo)
+        rospy.Subscriber("/cameras/left_hand_camera/cam_info", CameraInfo, get_cam_info)
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
     rospy.spin()
