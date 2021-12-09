@@ -41,22 +41,23 @@ class Coord_Client():
             hover_pose.pose.position.z += 0.2
             plan_hover = self.planner.plan_to_pose(hover_pose, [])
             #raw_input("Press <Enter> to move the arm to hover %s " % loc)
-            if not self.controller.execute_path(plan_hover, timeout=15, log=False):
+            if not self.controller.execute_path(plan_hover, timeout=300, log=False):
                 raise Exception("Execution failed")
         
         orien_const = OrientationConstraint()
         orien_const.link_name = "left_gripper"
         orien_const.header.frame_id = "base"
         orien_const.orientation.y = -1.0
-        orien_const.absolute_x_axis_tolerance = 0.1
-        orien_const.absolute_y_axis_tolerance = 0.1
-        orien_const.absolute_z_axis_tolerance = 0.1
+        orien_const.absolute_x_axis_tolerance = 0.2
+        orien_const.absolute_y_axis_tolerance = 0.2
+        orien_const.absolute_z_axis_tolerance = 0.2
         orien_const.weight = 1.0
         plan_down = self.planner.plan_to_pose(pose, [orien_const])
         raw_input("Press <Enter> to move the arm to final position %s: " % loc)
-        if not self.controller.execute_path(plan_down, timeout=15, log=False):
+        rospy.sleep(0.5)
+        if not self.controller.execute_path(plan_down, timeout=300, log=False):
             raise Exception("Execution failed")
-        rospy.sleep(1)
+        rospy.sleep(0.5)
         print("done")
 
     def pickup(self):
