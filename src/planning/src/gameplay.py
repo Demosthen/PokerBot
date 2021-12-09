@@ -123,10 +123,11 @@ class Gameplay:
                     center_card = c
             center_card = self.verify_card(center_card)
             
-            card_to_move, target = self.pick_card(center_card)
-            self.move_card(target, self.make_pose(self.play_center))
+            self.pick_play_card(center_card)
+            raw_input("Baxter has finished its turn. Make your turn, then press <Enter>.")
+            # self.move_card(target, self.make_pose(self.play_center))
 
-    def pick_card(self, center): # TODO
+    def pick_play_card(self, center): # TODO
         for i in range(len(self.baxter_hand)):
             if not self.baxter_hand[i]:
                 continue
@@ -144,13 +145,9 @@ class Gameplay:
                 self.free_spaces[i] = 1
                 self.baxter_hand[i] = 0               
                 self.turn = "player"
-                # break
-                return card
-            self.free_spaces[i] = 1
-        if self.game_state == "baxter":
-            self.draw_card(1)
-            
-        return hand[0]
+                return True # on success
+        self.draw_card(1)
+        return False # on not finding a card to play :(
 
 
         
