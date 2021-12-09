@@ -25,13 +25,15 @@ class Gameplay:
         #Initiates coord_client and looks for card deck
         self.client = Coord_Client()
         rospy.sleep(2)
+        self.client.pickup()
+        rospy.sleep(1)
         self.client.release()
         self.current_cards = None
         self.deck_of_cards = None # self.current_cards[1][0]
         self.game_state = "start"
-        self.baxter_hand = np.zeros(8)
+        self.baxter_hand = [None] * 8
         self.free_spaces = np.ones(8)
-        self.hand_start = Point(0.549, 0.181, -0.135)
+        self.hand_start = Point(0.639, 0.580, -0.135)
         
         self.bev = PoseStamped()
         self.setup_bev()
@@ -52,8 +54,7 @@ class Gameplay:
                     if i:
                         break
         self.twod_to_3d = wrapper
-        self.locate_deck()
-        self.init_hand()
+        self.locate_deck_and_init_hand()
         print("Game setup complete!")
 
     def setup_bev(self):
@@ -67,17 +68,18 @@ class Gameplay:
         self.bev.pose.orientation.z = 0
         self.bev.pose.orientation.w = 0
 
-    def go_to_bev(self):
+    def go_to_bev(self, confirm=True):
         self.client.move(self.bev, "bev", hover=False)
         rospy.sleep(0.5)
-        raw_input("Bird's eye view complete, press <Enter> to confirm: ")
+        if (confirm):
+            raw_input("Bird's eye view complete, press <Enter> to confirm: ")
 
     def locate_deck_and_init_hand(self):
         self.go_to_bev()
         deck_spotting = self.twod_to_3d()
         print("deck location: ", deck_spotting)
         self.deck_of_cards = deck_spotting.cards.coords[0]
-        self.play_center = self.deck_of_cards.y + 0.1 # Gameplay area is always to the right of the deck
+        self.play_center = self.deck_of_cards.y - 0.1 # Gameplay area is always to the right of the deck
 
         # Draw 4 cards as the starting hand
         self.draw_card(4, initial_bev=False)
@@ -99,8 +101,8 @@ class Gameplay:
     def move_card(self, source, dest):
         self.client.move(source, "card")
         self.client.pickup() 
-        print("GO_TO_BEV IS COMMENTED HERE, UNCOMMENT IF PATH PLANNING STARTS TO FAIL")
-        # self.go_to_bev()
+        # print("GO_TO_BEV IS COMMENTED HERE, UNCOMMENT IF PATH PLANNING STARTS TO FAIL")
+        self.go_to_bev(confirm=False)
 
         self.client.move(dest, "destination")
         self.client.release() 
@@ -246,7 +248,7 @@ class Gameplay:
         return (a.x - b.x) **2 + (a.y - b.y) ** 2
 
     # Gives user a chance to correct for vision errors
-    def verify_card(card):
+    def verify_card(self, card):
         rinput = raw_input("Found %s, press <Enter> to confirm: " % card)
         while rinput:
             confirm = raw_input("Are you sure? New card will be", rinput)
