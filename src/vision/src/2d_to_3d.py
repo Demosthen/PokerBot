@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import PoseStamped, Point
 from ar_track_alvar_msgs.msg import AlvarCorners, AlvarMarkers
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CameraInfo
 from vision.msg import CardList
 from vision.srv import fuck
 import tf
@@ -224,9 +224,8 @@ def listener():
     rospy.Subscriber('/ar_pose_marker', AlvarMarkers, get_markers)
     rospy.Subscriber('/pokerbot/card', CardList, get_coords_cards)
     rospy.Subscriber('/ar_corners', AlvarCorners, get_corners)
-    rospy.Service('twod_to_3d', fuck, pointcloud_projection)
+    rospy.Service('twod_to_3d', fuck, intrinsic_projection if USE_INTRINSIC else pointcloud_projection)
     if USE_INTRINSIC:
-        caminfo_sub = rospy.Subscriber(cam_info_topic, CameraInfo)
         rospy.Subscriber("/cameras/left_hand_camera/cam_info", CameraInfo, get_cam_info)
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
