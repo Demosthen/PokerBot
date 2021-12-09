@@ -9,7 +9,7 @@ from vision.msg import CardList
 from vision.srv import fuck
 import tf
 USE_TWO_TAGS = True
-USE_INTRINSIC = False
+USE_INTRINSIC = True
 #SUBSCRIBE TO THE TOPIC THAT POSTS EACH OF THE ALVARCORNERS (/ar_corners), ALVARMARKER (ar_pose_marker), CardList (/pokerbot/card)
 #Write a callback function to respond whenever we get something from each topic
 #Get the relative transformation between the two ar markers (how far apart are they in the x axis and y axis) in 3D and get the same transformation in 2D
@@ -151,8 +151,9 @@ def intrinsic_projection(req):
     tf_listener.waitForTransform('/left_hand_camera', '/base', rospy.Time(), rospy.Duration(10))
     
     (trans, rot) = tf_listener.lookupTransform('/left_hand_camera', '/base', rospy.Time(0))
+    (trans2, rot2) = tf_listener.lookupTransform('/base', '/left_hand_camera', rospy.Time(0))
     transform = transformer.fromTranslationRotation(trans, rot) # base to camera
-    inv_transform = np.linalg.inv(transform) # camera to base
+    inv_transform =transformer.fromTranslationRotation(trans2, rot2) # camera to base
     tf_marker_coords = [np.matmul(transform, np.array([m.pose.pose.position.x, m.pose.pose.position.y, m.pose.pose.position.z, 1])) for m in markers]
     z_coord = sum([c[2] for c in tf_marker_coords]) / len(tf_marker_coords)
     distances = []
@@ -162,6 +163,7 @@ def intrinsic_projection(req):
         print("CARD:", coord.x, coord.y)
         homog_coord = np.array([coord.x, coord.y, 1]) # if fails, flip x and y and negate the homogeneous y coordinate
         three_d = np.matmul(inv_K, homog_coord)
+        print(three_d)
         three_d *= z_coord / three_d[2]
         h_three_d = np.array([three_d[0], three_d[1], three_d[2], 1])
         three_d = np.matmul(inv_transform, h_three_d)

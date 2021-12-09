@@ -298,7 +298,8 @@ class Gameplay:
 def main():
     rospy.init_node('win_node')
     gameplay = Gameplay()
-    #gameplay.loop()
+    raw_input("Press <Enter> to begin.")
+    gameplay.loop()
     
 if __name__ == "__main__":
     main()
